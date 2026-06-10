@@ -742,8 +742,13 @@
     const navBtn    = document.getElementById('navBtn');
     const navDropdown = document.getElementById('navDropdown');
 
-    // Init book indices
-    categories.forEach(cat => { slideBookIndex[slug(cat)] = 0; });
+    // Init book indices and sync arrow states
+    categories.forEach(cat => {
+      const id = slug(cat);
+      const entries = entriesByCategory[cat] || [];
+      slideBookIndex[id] = 0;
+      if (entries.length > 0) setBookIndex(id, 0, entries.length);
+    });
 
     // ── Arrow buttons ──────────────────────────────────────────────────────
     container.addEventListener('click', e => {
