@@ -62,6 +62,7 @@
       border-bottom: 2px solid rgba(0,0,0,0.2);
     }
 
+    /* ─── WORDMARK AS BUTTON ─────────────────────────────────────── */
     .header__wordmark {
       font-family: 'Catamaran', sans-serif;
       font-weight: 900;
@@ -69,6 +70,12 @@
       letter-spacing: -0.01em;
       line-height: 1;
       flex-shrink: 0;
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      padding: 0;
+      text-align: left;
     }
 
     .header__wordmark span {
@@ -79,6 +86,227 @@
       text-transform: uppercase;
       color: rgba(255,255,255,0.6);
       margin-bottom: 1px;
+    }
+
+    /* ─── HOME SCREEN ────────────────────────────────────────────── */
+    .home-screen {
+      position: fixed;
+      top: calc(var(--header-h) + env(safe-area-inset-top, 0px));
+      left: 0; right: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .home-screen__top {
+      text-align: center;
+      flex-shrink: 0;
+      padding: clamp(20px, 3vh, 40px) 24px clamp(8px, 1.5vh, 20px);
+    }
+
+    .home-screen__eyebrow {
+      font-family: 'Catamaran', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 8px;
+    }
+
+    .home-screen__headline {
+      font-family: 'Catamaran', sans-serif;
+      font-weight: 900;
+      font-size: clamp(2rem, 7vw, 4rem);
+      line-height: 1.0;
+      letter-spacing: -0.04em;
+      margin-bottom: 10px;
+    }
+
+    .home-screen__tagline {
+      font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+      color: rgba(255,255,255,0.6);
+      line-height: 1.6;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    /* ─── BOOK SHELF ────────────────────────────────────────────── */
+    .rolodex-wrap {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .rolodex-label {
+      flex-shrink: 0;
+      text-align: center;
+      padding: 0 32px clamp(10px, 2vh, 20px);
+      z-index: 20;
+    }
+
+    .rolodex-label__name {
+      font-family: 'Catamaran', sans-serif;
+      font-weight: 900;
+      font-size: clamp(1.1rem, 3vw, 2rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: #fff;
+      margin-bottom: 4px;
+      min-height: 1.3em;
+    }
+
+    .rolodex-label__meta {
+      font-family: 'Catamaran', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mango);
+      margin-bottom: 10px;
+    }
+
+    .rolodex-label__meta--empty { color: rgba(255,255,255,0.3); }
+
+    .rolodex-label__hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 8px 22px;
+      font-family: 'Catamaran', sans-serif;
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .rolodex-label__hint:hover { background: rgba(0,0,0,0.55); }
+
+    .rolodex-stage {
+      flex: 1;
+      width: 100%;
+      min-height: 0;
+      position: relative;
+      cursor: grab;
+      overflow: hidden;
+    }
+
+    .rolodex-stage.dragging { cursor: grabbing; }
+
+    /* Shelf surface */
+    .shelf-line {
+      position: absolute;
+      bottom: 18%;
+      left: 0; right: 0;
+      height: 8px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.2));
+      border-radius: 4px;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .shelf-shadow {
+      position: absolute;
+      bottom: calc(18% - 10px);
+      left: 0; right: 0;
+      height: 28px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent);
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    /* Individual book */
+    .book {
+      position: absolute;
+      bottom: calc(18% + 8px);
+      transform-origin: center bottom;
+      user-select: none;
+      -webkit-user-select: none;
+      z-index: 3;
+      cursor: pointer;
+      transition: filter 0.2s;
+    }
+
+    .book__inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 2px 4px 4px 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      /* spine shadow */
+      box-shadow:
+        inset -4px 0 8px rgba(0,0,0,0.35),
+        inset 2px 0 4px rgba(255,255,255,0.1),
+        3px 6px 20px rgba(0,0,0,0.5);
+    }
+
+    /* Spine text for non-active books */
+    .book__spine-text {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-family: 'Catamaran', sans-serif;
+      font-weight: 800;
+      font-size: clamp(0.6rem, 1.1vw, 0.85rem);
+      line-height: 1.2;
+      color: rgba(0,0,0,0.65);
+      padding: 10px 4px;
+      text-align: center;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Active book faces out — wider, text horizontal */
+    .book.active .book__inner {
+      border-radius: 3px 6px 6px 3px;
+      box-shadow:
+        -5px 0 0 rgba(0,0,0,0.2),
+        inset 3px 0 6px rgba(255,255,255,0.15),
+        12px 20px 48px rgba(0,0,0,0.7);
+    }
+
+    .book.active .book__spine-text {
+      writing-mode: horizontal-tb;
+      transform: none;
+      font-size: clamp(0.82rem, 1.6vw, 1.1rem);
+      color: rgba(0,0,0,0.8);
+      font-weight: 900;
+      padding: 16px 14px;
+      -webkit-line-clamp: 5;
+    }
+
+    .rolodex-hint-text {
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Catamaran', sans-serif;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      white-space: nowrap;
+      z-index: 20;
+      pointer-events: none;
     }
 
     .header__sep {
@@ -554,12 +782,12 @@
 
 <!-- ─── HEADER ─────────────────────────────────────────────────────────── -->
 <header class="header">
-  <div class="header__wordmark">
+  <button class="header__wordmark" id="homeBtn" aria-label="Go to home screen">
     <span>Westport Library</span>
     Community Picks
-  </div>
+  </button>
   <div class="header__sep"></div>
-  <div class="header__nav">
+  <div class="header__nav" id="headerNav" style="display:none">
     <button class="header__nav-btn" id="navBtn" aria-haspopup="listbox" aria-expanded="false">
       <span id="navBtnLabel">Jump to category…</span>
       <svg class="chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
@@ -568,11 +796,29 @@
     </button>
     <div class="header__dropdown" id="navDropdown" role="listbox"></div>
   </div>
-  <div class="header__progress" id="headerProgress"></div>
+  <div class="header__progress" id="headerProgress" style="display:none"></div>
 </header>
 
+<!-- ─── HOME SCREEN ───────────────────────────────────────────────────── -->
+<div class="home-screen" id="homeScreen">
+  <div class="home-screen__top">
+    <div class="home-screen__eyebrow">Summer Reading Challenge 2026</div>
+    <h1 class="home-screen__headline">Community<br>Picks</h1>
+    <p class="home-screen__tagline">Stuck on a challenge? Browse top-rated books submitted by other readers for ideas.</p>
+  </div>
+  <div class="rolodex-wrap" id="rolodexWrap">
+    <div class="rolodex-label" id="rolodexLabel">
+      <div class="rolodex-label__name" id="rolodexName">—</div>
+      <div class="rolodex-label__meta" id="rolodexMeta"></div>
+      <div class="rolodex-label__hint" id="rolodexBtn">Browse these picks →</div>
+    </div>
+    <div class="rolodex-stage" id="rolodexStage"></div>
+    <div class="rolodex-hint-text">Drag to spin</div>
+  </div>
+</div>
+
 <!-- ─── SCROLL CONTAINER ──────────────────────────────────────────────── -->
-<div class="scroll-container" id="scrollContainer">
+<div class="scroll-container" id="scrollContainer" style="display:none">
   <div class="status-bar">
     <div class="spinner"></div>
     <span style="font-size:0.85rem">Loading community picks…</span>
@@ -733,6 +979,8 @@
 
     updateHeaderProgress(0, total, categories[0]);
     attachEvents(categories, entriesByCategory, total);
+    buildWheel(categories, entriesByCategory);
+    showHome();
   }
 
   // ── Events ────────────────────────────────────────────────────────────────
@@ -985,6 +1233,258 @@
 
     render(categories, ebc);
   }
+
+  // ── Screen navigation ─────────────────────────────────────────────────────
+
+  function showHome() {
+    document.getElementById('homeScreen').style.display = 'flex';
+    document.getElementById('scrollContainer').style.display = 'none';
+    document.getElementById('headerNav').style.display = 'none';
+    document.getElementById('headerProgress').style.display = 'none';
+  }
+
+  function showCarousel(jumpToSlug) {
+    document.getElementById('homeScreen').style.display = 'none';
+    document.getElementById('scrollContainer').style.display = 'block';
+    document.getElementById('headerNav').style.display = '';
+    document.getElementById('headerProgress').style.display = '';
+    if (jumpToSlug) {
+      const slide = document.getElementById('slide-' + jumpToSlug);
+      if (slide) slide.scrollIntoView({ behavior: 'instant' });
+    }
+  }
+
+  // ── Book Shelf ───────────────────────────────────────────────────────────
+
+  const BOOK_COLORS = [
+    '#f7c948', // mango
+    '#a8dde8', // mint
+    '#f4a0c0', // strawberry
+    '#f5e8d0', // vanilla
+    '#e8c4f0', // lavender
+    '#b8e8c0', // sage
+  ];
+
+  function buildWheel(categories, entriesByCategory) {
+    const stage  = document.getElementById('rolodexStage');
+    const nameEl = document.getElementById('rolodexName');
+    const metaEl = document.getElementById('rolodexMeta');
+    const btn    = document.getElementById('rolodexBtn');
+    const wrap   = document.getElementById('rolodexWrap');
+    if (!stage) return;
+
+    const N = categories.length;
+
+    // Shelf line
+    const shelfLine = document.createElement('div');
+    shelfLine.className = 'shelf-line';
+    stage.appendChild(shelfLine);
+    const shelfShadow = document.createElement('div');
+    shelfShadow.className = 'shelf-shadow';
+    stage.appendChild(shelfShadow);
+
+    // Build books
+    const books = categories.map((cat, i) => {
+      const el = document.createElement('div');
+      el.className = 'book';
+      el.dataset.idx  = i;
+      el.dataset.slug = slug(cat);
+      const color = BOOK_COLORS[i % BOOK_COLORS.length];
+      el.innerHTML = `<div class="book__inner" style="background:${color}">
+        <div class="book__spine-text">${escHtml(cat)}</div>
+      </div>`;
+      stage.appendChild(el);
+      return el;
+    });
+
+    let activeIdx = 0;
+    let offsetX   = 0; // current drag offset in pixels, maps to book index
+
+    function getStageW() { return stage.offsetWidth || window.innerWidth; }
+    function getStageH() { return stage.offsetHeight || 300; }
+
+    // Layout constants computed from stage size
+    function getLayout() {
+      const W = getStageW();
+      const H = getStageH();
+      const activeW  = Math.min(W * 0.22, 160);
+      const activeH  = activeW * 1.6;
+      const spineW   = Math.max(28, Math.min(48, W * 0.04));
+      const spineH   = Math.min(activeH * 0.85, H * 0.55);
+      const centerX  = W / 2;
+      return { W, H, activeW, activeH, spineW, spineH, centerX };
+    }
+
+    function xForIdx(idx) {
+      const { centerX, activeW, spineW } = getLayout();
+      // Active book is at center, others spread out as spines
+      const gap = 4;
+      // Left of center: books to the left have their right edge abutting
+      // Right of center: books to the right
+      const delta = idx - activeIdx;
+      if (delta === 0) return centerX;
+      if (delta < 0) {
+        // left side — stack from active leftward
+        return centerX - activeW / 2 - (spineW + gap) * (-delta - 0.5);
+      } else {
+        // right side
+        return centerX + activeW / 2 + (spineW + gap) * (delta - 0.5);
+      }
+    }
+
+    function positionBooks(dragDelta) {
+      const { activeW, activeH, spineW, spineH, centerX } = getLayout();
+      const bookPerPx = 1 / (spineW + 4);
+      const floatIdx  = activeIdx - dragDelta * bookPerPx;
+      const nearestIdx = Math.max(0, Math.min(N - 1, Math.round(floatIdx)));
+      const gap = 4;
+
+      books.forEach((book, i) => {
+        const delta = i - floatIdx;
+        const isActive = Math.abs(delta) < 0.5;
+
+        // Width and height interpolation
+        const t = Math.max(0, 1 - Math.abs(delta)); // 1 at active, 0 further away
+        const w = spineW + (activeW - spineW) * Math.max(0, 1 - Math.abs(delta));
+        const h = spineH + (activeH - spineH) * Math.max(0, 1 - Math.abs(delta));
+
+        // X position: pack books together
+        let x;
+        if (delta === 0) {
+          x = centerX - w / 2;
+        } else if (delta < 0) {
+          // left of active
+          x = centerX - activeW / 2 - (spineW + gap) * (-delta) - spineW / 2;
+        } else {
+          x = centerX + activeW / 2 + (spineW + gap) * (delta - 1) + gap;
+        }
+
+        const opacity = Math.max(0.25, 1 - Math.abs(delta) * 0.18);
+        const zIndex  = Math.round(100 - Math.abs(delta) * 10);
+
+        book.style.width   = w + 'px';
+        book.style.height  = h + 'px';
+        book.style.left    = x + 'px';
+        book.style.bottom  = 'calc(18% + 8px)';
+        book.style.opacity = opacity;
+        book.style.zIndex  = zIndex;
+        book.style.transform = `perspective(400px) rotateY(${delta * -3}deg)`;
+        book.classList.toggle('active', Math.abs(delta) < 0.5);
+      });
+
+      // Update label for nearest book
+      const ni = Math.max(0, Math.min(N - 1, nearestIdx));
+      const cat   = categories[ni];
+      const count = (entriesByCategory[cat] || []).length;
+      nameEl.textContent = cat;
+      if (count === 0) {
+        metaEl.textContent  = 'No reviews yet';
+        metaEl.className = 'rolodex-label__meta rolodex-label__meta--empty';
+      } else {
+        metaEl.textContent  = count + ' review' + (count > 1 ? 's' : '');
+        metaEl.className = 'rolodex-label__meta';
+      }
+      return nearestIdx;
+    }
+
+    function snapToIdx(idx, onDone) {
+      activeIdx = Math.max(0, Math.min(N - 1, idx));
+      offsetX   = 0;
+      positionBooks(0);
+      if (onDone) onDone();
+    }
+
+    // Initial render
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        positionBooks(0);
+      });
+    });
+
+    window.addEventListener('resize', () => positionBooks(0));
+
+    // Browse button
+    btn.addEventListener('click', () => {
+      showCarousel(books[activeIdx].dataset.slug);
+    });
+
+    // Click book
+    stage.addEventListener('click', e => {
+      const book = e.target.closest('.book');
+      if (!book) return;
+      const idx = parseInt(book.dataset.idx, 10);
+      if (idx === activeIdx) {
+        showCarousel(book.dataset.slug);
+      } else {
+        activeIdx = idx;
+        positionBooks(0);
+      }
+    });
+
+    // Drag
+    let dragStart = null, dragCurrent = 0, lastX = null, lastT = null, velX = 0;
+    let rafId = null;
+
+    function onDragStart(x) {
+      dragStart   = x;
+      dragCurrent = 0;
+      lastX = x; lastT = Date.now(); velX = 0;
+      if (rafId) cancelAnimationFrame(rafId);
+      stage.classList.add('dragging');
+    }
+
+    function onDragMove(x) {
+      if (dragStart === null) return;
+      const now = Date.now();
+      velX = (x - lastX) / (now - lastT + 1);
+      lastX = x; lastT = now;
+      dragCurrent = x - dragStart;
+      const nearIdx = positionBooks(dragCurrent);
+    }
+
+    function onDragEnd() {
+      if (dragStart === null) return;
+      const startIdx = activeIdx;
+      dragStart = null;
+      stage.classList.remove('dragging');
+
+      // Momentum flick
+      const { spineW } = getLayout();
+      const pxPerBook = spineW + 4;
+      let v = velX * 1.5;
+      let acc = dragCurrent;
+
+      function momentum() {
+        if (Math.abs(v) < 0.3) {
+          // Snap to nearest
+          const nearIdx = Math.max(0, Math.min(N - 1,
+            Math.round(startIdx - acc / pxPerBook)));
+          snapToIdx(nearIdx);
+          return;
+        }
+        acc += v;
+        v *= 0.88;
+        const nearIdx = positionBooks(acc);
+        rafId = requestAnimationFrame(momentum);
+      }
+      rafId = requestAnimationFrame(momentum);
+    }
+
+    stage.addEventListener('touchstart', e => onDragStart(e.touches[0].clientX), { passive: true });
+    stage.addEventListener('touchmove',  e => { e.preventDefault(); onDragMove(e.touches[0].clientX); }, { passive: false });
+    stage.addEventListener('touchend',   onDragEnd);
+    stage.addEventListener('mousedown',  e => onDragStart(e.clientX));
+    window.addEventListener('mousemove', e => { if (dragStart !== null) onDragMove(e.clientX); });
+    window.addEventListener('mouseup',   onDragEnd);
+
+    wrap.addEventListener('wheel', e => {
+      e.preventDefault();
+      activeIdx = Math.max(0, Math.min(N - 1, activeIdx + (e.deltaY > 0 ? 1 : -1)));
+      positionBooks(0);
+    }, { passive: false });
+  }
+
+  document.getElementById('homeBtn').addEventListener('click', showHome);
 
   loadData();
 </script>
