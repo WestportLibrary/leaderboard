@@ -680,7 +680,7 @@
     } else {
       const booksHTML = entries.map(r => buildBookSlide(r, cat)).join('');
       stageContent = `
-        <button class="stage-arrow stage-arrow--prev" data-cat="${id}" aria-label="Previous book" ${entries.length<=1?'disabled':''}>&#8592;</button>
+        <button class="stage-arrow stage-arrow--prev" data-cat="${id}" aria-label="Previous book" disabled>&#8592;</button>
         <div class="book-viewport">
           <div class="book-track" id="track-${id}">${booksHTML}</div>
         </div>
@@ -846,12 +846,12 @@
     dots.forEach((d,i) => d.classList.toggle('active', i === idx));
 
     // Update arrows
-    const slide = document.querySelector(`[data-slug="${catSlug}"]`);
+    const slide = document.getElementById(`slide-${catSlug}`);
     if (slide) {
       const prev = slide.querySelector('.stage-arrow--prev');
       const next = slide.querySelector('.stage-arrow--next');
-      if (prev) prev.disabled = idx === 0;
-      if (next) next.disabled = idx === total - 1;
+      if (prev) { if (idx === 0) prev.setAttribute('disabled',''); else prev.removeAttribute('disabled'); }
+      if (next) { if (idx === total - 1) next.setAttribute('disabled',''); else next.removeAttribute('disabled'); }
     }
   }
 
