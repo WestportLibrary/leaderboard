@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Community Picks — Summer Reading Challenge 2026 | Westport Library</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Catamaran:wght@400;600;700;900&family=Open+Sans:ital,wght@0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-8VJ1NHYPKQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-8VJ1NHYPKQ');
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:       #00a8a8;
+      --teal-dark:  #0c6980;
+      --bg:         #bd2f92;
+      --bg-dark:    #9e2079;
+      --mango:      #f7c948;
+      --mint:       #a8dde8;
+      --strawberry: #f4a0c0;
+      --vanilla:    #f5e8d0;
+      --text:       #ffffff;
+      --muted:      rgba(255,255,255,0.6);
+      --faint:      rgba(255,255,255,0.25);
+      --header-h:   56px;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Open Sans', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── HEADER ─────────────────────────────────────────────────── */
+    .header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: calc(var(--header-h) + env(safe-area-inset-top, 0px));
+      background: var(--teal-dark);
+      display: flex;
+      align-items: flex-end;
+      padding-bottom: 8px;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-left: max(20px, env(safe-area-inset-left, 0px));
+      padding-right: max(20px, env(safe-area-inset-right, 0px));
+      gap: 14px;
+      z-index: 300;
+      border-bottom: 2px solid rgba(0,0,0,0.2);
+    }
+
+    .header__wordmark {
+      font-family: 'Catamaran', sans-serif;
+      font-weight: 900;
+      font-size: 0.95rem;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .header__wordmark span {
+      display: block;
+      font-weight: 400;
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 1px;
+    }
+
+    .header__sep {
+      width: 1px;
+      height: 18px;
+      background: rgba(255,255,255,0.2);
+      flex-shrink: 0;
+    }
+
+    /* Category dropdown */
+    .header__nav {
+      position: relative;
+      flex: 1;
+    }
+
+    .header__nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 6px 12px;
+      color: #fff;
+      font-family: 'Catamaran', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+      transition: background 0.15s;
+    }
+
+    .header__nav-btn:hover { background: rgba(255,255,255,0.18); }
+
+    .header__nav-btn .chevron {
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+
+    .header__nav-btn.open .chevron { transform: rotate(180deg); }
+
+    .header__dropdown {
+      position: fixed;
+      top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + 4px);
+      left: 16px;
+      right: 16px;
+      max-width: 640px;
+      max-height: 60vh;
+      overflow-y: auto;
+      background: var(--teal-dark);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+      z-index: 400;
+      display: none;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.2) transparent;
+    }
+
+    .header__dropdown.open { display: block; }
+
+    .header__dropdown-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.85);
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.1s;
+      gap: 12px;
+    }
+
+    .header__dropdown-item:last-child { border-bottom: none; }
+    .header__dropdown-item:hover { background: rgba(255,255,255,0.1); }
+    .header__dropdown-item.active {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .header__dropdown-item .di-count {
+      font-size: 0.68rem;
+      color: var(--faint);
+      flex-shrink: 0;
+    }
+
+    /* Category progress indicator */
+    .header__progress {
+      margin-left: auto;
+      font-family: 'Catamaran', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.5);
+      flex-shrink: 0;
+      letter-spacing: 0.06em;
+    }
+
+    /* ─── MAIN SCROLL CONTAINER ──────────────────────────────────── */
+    .scroll-container {
+      position: fixed;
+      top: calc(var(--header-h) + env(safe-area-inset-top, 0px));
+      left: 0; right: 0;
+      bottom: 0;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .scroll-container::-webkit-scrollbar { display: none; }
+
+    /* ─── CATEGORY SLIDE ─────────────────────────────────────────── */
+    .category-slide {
+      height: calc(100vh - var(--header-h) - env(safe-area-inset-top, 0px));
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Gradient background shift per category using ice cream colors */
+    .category-slide::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(160deg, rgba(0,0,0,0.18) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── CATEGORY LABEL (inside book info) ─────────────────────── */
+    .book-slide__category {
+      font-family: 'Catamaran', sans-serif;
+      font-size: clamp(0.7rem, 1.2vw, 1rem);
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 4px;
+    }
+
+    /* ─── BOOK STAGE ─────────────────────────────────────────────── */
+    .book-stage {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* ─── BOOK DOTS (absolute overlay) ──────────────────────────── */
+    .book-dots {
+      position: absolute;
+      bottom: 44px;
+      left: 0;
+      right: 50%;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      transition: background 0.2s, transform 0.2s;
+      cursor: pointer;
+      pointer-events: all;
+    }
+
+    .dot.active {
+      background: #fff;
+      transform: scale(1.3);
+    }
+
+    /* ─── SCROLL HINT (absolute overlay) ────────────────────────── */
+    .scroll-hint {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      opacity: 0.4;
+      animation: hint-bob 2s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes hint-bob {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(4px); }
+    }
+
+    .scroll-hint svg { display: block; }
+    .scroll-hint span {
+      font-family: 'Catamaran', sans-serif;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    /* Arrow buttons */
+    .stage-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      flex-shrink: 0;
+    }
+
+    .stage-arrow:hover { background: rgba(0,0,0,0.65); }
+    .stage-arrow[disabled] { opacity: 0.2; pointer-events: none; }
+    .stage-arrow--prev { left: 12px; }
+    .stage-arrow--next { right: 12px; }
+
+    /* Book viewport (clips the sliding books) */
+    .book-viewport {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .book-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+    }
+
+    /* ─── SINGLE BOOK CARD ───────────────────────────────────────── */
+    .book-slide {
+      flex-shrink: 0;
+      width: 100%;
+      min-width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 100%;
+      align-items: stretch;
+    }
+
+    .book-slide__cover-wrap {
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.12);
+    }
+
+    .book-slide__cover {
+      height: 100%;
+      width: 100%;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+      padding: 32px 24px;
+      filter: drop-shadow(8px 16px 40px rgba(0,0,0,0.55));
+    }
+
+    .book-slide__cover-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      opacity: 0.3;
+    }
+
+    .book-slide__info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-self: stretch;
+      gap: clamp(12px, 2vh, 24px);
+      padding: 0 clamp(32px, 5vw, 80px) 0 clamp(28px, 4vw, 64px);
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .book-slide__stars {
+      display: flex;
+      gap: 6px;
+    }
+
+    .star {
+      font-size: clamp(1rem, 1.8vw, 1.4rem);
+      line-height: 1;
+    }
+    .star--filled { color: var(--mango); }
+    .star--empty  { color: rgba(255,255,255,0.2); }
+
+    .book-slide__title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: clamp(1.8rem, 4vw, 4rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .book-slide__author {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(1rem, 2vw, 1.8rem);
+      color: rgba(255,255,255,0.65);
+      margin-top: -4px;
+    }
+
+    .book-slide__review {
+      font-size: clamp(0.95rem, 1.5vw, 1.25rem);
+      font-style: italic;
+      line-height: 1.85;
+      color: rgba(255,255,255,0.82);
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .book-slide__patron {
+      font-family: 'Catamaran', sans-serif;
+      font-size: clamp(0.68rem, 0.9vw, 0.88rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.38);
+    }
+
+    .book-slide__catalog {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 6px;
+      padding: clamp(10px, 1.2vh, 16px) clamp(18px, 2vw, 28px);
+      font-family: 'Catamaran', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.78rem, 1vw, 1rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.15s;
+      align-self: flex-start;
+      margin-top: 4px;
+    }
+
+    .book-slide__catalog:hover { background: rgba(0,0,0,0.5); }
+
+    /* ─── PLACEHOLDER SLIDE ──────────────────────────────────────── */
+    .placeholder-slide {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+      padding: 24px;
+    }
+
+    .placeholder-slide__icon { font-size: 2.5rem; opacity: 0.4; }
+
+    .placeholder-slide__text {
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    .placeholder-slide__text a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: underline;
+    }
+
+    /* ─── STATUS ─────────────────────────────────────────────────── */
+    .status-bar {
+      height: calc(100vh - var(--header-h));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .spinner {
+      width: 28px; height: 28px;
+      border: 2px solid rgba(255,255,255,0.15);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── MOBILE ADJUSTMENTS ─────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .book-slide {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+      }
+
+      .book-slide__cover-wrap {
+        height: 42vh;
+      }
+
+      .book-slide__cover {
+        padding: 20px 40px 12px;
+      }
+
+      .book-slide__info {
+        padding: 16px 24px 16px;
+        gap: 10px;
+        justify-content: flex-start;
+        overflow-y: auto;
+      }
+
+      .book-slide__review { -webkit-line-clamp: 3; }
+      .book-slide__title { font-size: clamp(1.2rem, 5.5vw, 1.6rem); }
+
+      .stage-arrow--prev { left: 6px; }
+      .stage-arrow--next { right: 6px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .book-track { transition: none; }
+      .scroll-hint { animation: none; }
+      .spinner { animation: none; }
+    }
+
+    /* ─── DESKTOP DROPDOWN WIDTH ─────────────────────────────────── */
+    @media (min-width: 768px) {
+      .header__dropdown {
+        left: 16px;
+        right: auto;
+        width: 560px;
+        max-width: calc(100vw - 32px);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── HEADER ─────────────────────────────────────────────────────────── -->
+<header class="header">
+  <div class="header__wordmark">
+    <span>Westport Library</span>
+    Community Picks
+  </div>
+  <div class="header__sep"></div>
+  <div class="header__nav">
+    <button class="header__nav-btn" id="navBtn" aria-haspopup="listbox" aria-expanded="false">
+      <span id="navBtnLabel">Jump to category…</span>
+      <svg class="chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="header__dropdown" id="navDropdown" role="listbox"></div>
+  </div>
+  <div class="header__progress" id="headerProgress"></div>
+</header>
+
+<!-- ─── SCROLL CONTAINER ──────────────────────────────────────────────── -->
+<div class="scroll-container" id="scrollContainer">
+  <div class="status-bar">
+    <div class="spinner"></div>
+    <span style="font-size:0.85rem">Loading community picks…</span>
+  </div>
+</div>
+
+<script src="js/seasonal-config.js"></script>
+<script>
+  // ── Utilities ─────────────────────────────────────────────────────────────
+
+  function parseCSVRow(line) {
+    const result = [];
+    let cur = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (inQ && line[i+1] === '"') { cur += '"'; i++; }
+        else { inQ = !inQ; }
+      } else if (ch === ',' && !inQ) { result.push(cur); cur = ''; }
+      else { cur += ch; }
+    }
+    result.push(cur);
+    return result;
+  }
+
+  function isPublished(val) {
+    if (!val) return false;
+    return ['TRUE','1','YES'].includes(String(val).trim().toUpperCase());
+  }
+
+  function formatDisplayName(n) {
+    if (!n) return 'Anonymous';
+    const p = n.trim().split(/\s+/);
+    return p.length === 1 ? p[0] : p[0] + ' ' + p[p.length-1][0].toUpperCase() + '.';
+  }
+
+  function escHtml(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function slug(s) {
+    return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  }
+
+  function starsHTML(n) {
+    let h = '<div class="book-slide__stars" aria-label="'+n+' out of 5 stars">';
+    for (let i=1;i<=5;i++) h+='<span class="star '+(i<=n?'star--filled':'star--empty')+'">★</span>';
+    return h+'</div>';
+  }
+
+  // ── State ─────────────────────────────────────────────────────────────────
+
+  let categoryIndex = 0;   // which category slide is in view
+  const slideBookIndex = {}; // categorySlug → current book index
+
+  // ── Build HTML ────────────────────────────────────────────────────────────
+
+  function buildBookSlide(row, catName) {
+    const title   = row[4] || '';
+    const author  = row[5] || '';
+    const stars   = parseInt(row[6],10) || 0;
+    const review  = row[7] || '';
+    const isbn    = (row[8]||'').trim();
+    const catalog = (row[10]||'').trim();
+    const patron  = formatDisplayName(row[2]);
+
+    const lc = isbn
+      ? 'https://secure.syndetics.com/index.aspx?isbn='+encodeURIComponent(isbn)+'/LC.GIF&client=westportpl&upc=&oclc='
+      : null;
+    const mc = lc ? lc.replace('LC.GIF','MC.GIF') : null;
+
+    const coverHTML = lc
+      ? `<img class="book-slide__cover syndetics-cover" src="${lc}" data-mc="${mc}" alt="${escHtml(title)} cover" loading="lazy"/>`
+      : `<div class="book-slide__cover-placeholder">📖</div>`;
+
+    const catalogBtn = catalog
+      ? `<a class="book-slide__catalog" href="${escHtml(catalog)}" target="_blank" rel="noopener">Borrow it →</a>`
+      : '';
+
+    return `<article class="book-slide">
+      <div class="book-slide__cover-wrap">${coverHTML}</div>
+      <div class="book-slide__info">
+        <div class="book-slide__category">${escHtml(catName)}</div>
+        ${starsHTML(stars)}
+        <div class="book-slide__title">${escHtml(title)}</div>
+        <div class="book-slide__author">${escHtml(author)}</div>
+        <p class="book-slide__review">${escHtml(review)}</p>
+        <div class="book-slide__patron">— ${escHtml(patron)}</div>
+        ${catalogBtn}
+      </div>
+    </article>`;
+  }
+
+  function buildCategorySlide(cat, entries, catIdx, totalCats) {
+    const id      = slug(cat);
+    const isLast  = catIdx === totalCats - 1;
+
+    let stageContent;
+    if (entries.length === 0) {
+      stageContent = `<div class="placeholder-slide">
+        <div class="placeholder-slide__icon">🍦</div>
+        <div class="placeholder-slide__text">No 4- or 5-star reviews yet for this category.<br>
+          <a href="/reading-challenge/submit.html">Be the first to submit one!</a></div>
+      </div>`;
+    } else {
+      const booksHTML = entries.map(r => buildBookSlide(r, cat)).join('');
+      stageContent = `
+        <button class="stage-arrow stage-arrow--prev" data-cat="${id}" aria-label="Previous book" ${entries.length<=1?'disabled':''}>&#8592;</button>
+        <div class="book-viewport">
+          <div class="book-track" id="track-${id}">${booksHTML}</div>
+        </div>
+        <button class="stage-arrow stage-arrow--next" data-cat="${id}" aria-label="Next book" ${entries.length<=1?'disabled':''}>&#8594;</button>`;
+    }
+
+    const dotsHTML = entries.length > 1
+      ? '<div class="book-dots" id="dots-'+id+'">'
+        + entries.map((_,i) => `<span class="dot${i===0?' active':''}" data-cat="${id}" data-i="${i}"></span>`).join('')
+        + '</div>'
+      : '';
+
+    const scrollHint = isLast ? '' : `<div class="scroll-hint">
+      <svg width="16" height="10" viewBox="0 0 16 10" fill="none" aria-hidden="true">
+        <path d="M1 1l7 7 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Next category</span>
+    </div>`;
+
+    return `<section class="category-slide" id="slide-${id}" data-slug="${id}" data-cat-idx="${catIdx}">
+      <div class="book-stage">${stageContent}</div>
+      ${dotsHTML}
+      ${scrollHint}
+    </section>`;
+  }
+
+  // ── Render ────────────────────────────────────────────────────────────────
+
+  function render(categories, entriesByCategory) {
+    const container = document.getElementById('scrollContainer');
+    const total     = categories.length;
+
+    // Build slides
+    let html = '';
+    categories.forEach((cat, i) => {
+      html += buildCategorySlide(cat, entriesByCategory[cat]||[], i, total);
+    });
+    container.innerHTML = html;
+
+    // Build dropdown
+    const dropdown = document.getElementById('navDropdown');
+    dropdown.innerHTML = categories.map((cat, i) => {
+      const count = (entriesByCategory[cat]||[]).length;
+      return `<div class="header__dropdown-item${i===0?' active':''}"
+        role="option" data-cat-idx="${i}" data-slug="${slug(cat)}">
+        <span>${escHtml(cat)}</span>
+        <span class="di-count">${count > 0 ? count+' review'+(count>1?'s':'') : '—'}</span>
+      </div>`;
+    }).join('');
+
+    updateHeaderProgress(0, total, categories[0]);
+    attachEvents(categories, entriesByCategory, total);
+  }
+
+  // ── Events ────────────────────────────────────────────────────────────────
+
+  function attachEvents(categories, entriesByCategory, total) {
+    const container = document.getElementById('scrollContainer');
+    const navBtn    = document.getElementById('navBtn');
+    const navDropdown = document.getElementById('navDropdown');
+
+    // Init book indices
+    categories.forEach(cat => { slideBookIndex[slug(cat)] = 0; });
+
+    // ── Arrow buttons ──────────────────────────────────────────────────────
+    container.addEventListener('click', e => {
+      const arrow = e.target.closest('.stage-arrow');
+      if (!arrow) return;
+      const catSlug = arrow.dataset.cat;
+      const entries = entriesByCategory[categories.find(c=>slug(c)===catSlug)] || [];
+      const dir     = arrow.classList.contains('stage-arrow--next') ? 1 : -1;
+      navigateBook(catSlug, dir, entries.length);
+    });
+
+    // ── Dots ───────────────────────────────────────────────────────────────
+    container.addEventListener('click', e => {
+      const dot = e.target.closest('.dot');
+      if (!dot) return;
+      const catSlug = dot.dataset.cat;
+      const i       = parseInt(dot.dataset.i, 10);
+      const entries = entriesByCategory[categories.find(c=>slug(c)===catSlug)] || [];
+      setBookIndex(catSlug, i, entries.length);
+    });
+
+    // ── Swipe (horizontal) ────────────────────────────────────────────────
+    let touchStartX = null, touchStartY = null;
+    container.addEventListener('touchstart', e => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    container.addEventListener('touchend', e => {
+      if (touchStartX === null) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+        // horizontal swipe — find visible slide
+        const slide = getVisibleSlide();
+        if (!slide) return;
+        const catSlug = slide.dataset.slug;
+        const cat     = categories.find(c => slug(c) === catSlug);
+        const entries = entriesByCategory[cat] || [];
+        if (entries.length > 1) navigateBook(catSlug, dx < 0 ? 1 : -1, entries.length);
+      }
+      touchStartX = null; touchStartY = null;
+    }, { passive: true });
+
+    // ── Scroll observer (update header) ───────────────────────────────────
+    const slides = container.querySelectorAll('.category-slide');
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+          const idx = parseInt(entry.target.dataset.catIdx, 10);
+          categoryIndex = idx;
+          updateHeaderProgress(idx, total, categories[idx]);
+          updateDropdownActive(idx);
+        }
+      });
+    }, { root: container, threshold: 0.5 });
+
+    slides.forEach(s => io.observe(s));
+
+    // ── Dropdown toggle ────────────────────────────────────────────────────
+    navBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      const open = navDropdown.classList.toggle('open');
+      navBtn.setAttribute('aria-expanded', String(open));
+      navBtn.classList.toggle('open', open);
+    });
+
+    document.addEventListener('click', () => closeDropdown());
+
+    navDropdown.addEventListener('click', e => {
+      const item = e.target.closest('.header__dropdown-item');
+      if (!item) return;
+      const idx  = parseInt(item.dataset.catIdx, 10);
+      const slide = document.getElementById('slide-'+item.dataset.slug);
+      if (slide) slide.scrollIntoView({ behavior: 'smooth' });
+      closeDropdown();
+    });
+  }
+
+  // ── Book navigation ───────────────────────────────────────────────────────
+
+  function navigateBook(catSlug, dir, total) {
+    const cur  = slideBookIndex[catSlug] || 0;
+    const next = Math.max(0, Math.min(total - 1, cur + dir));
+    setBookIndex(catSlug, next, total);
+  }
+
+  function setBookIndex(catSlug, idx, total) {
+    slideBookIndex[catSlug] = idx;
+    const track = document.getElementById('track-'+catSlug);
+    if (track) track.style.transform = `translateX(-${idx * 100}%)`;
+
+    // Update dots
+    const dots = document.querySelectorAll(`#dots-${catSlug} .dot`);
+    dots.forEach((d,i) => d.classList.toggle('active', i === idx));
+
+    // Update arrows
+    const slide = document.querySelector(`[data-slug="${catSlug}"]`);
+    if (slide) {
+      const prev = slide.querySelector('.stage-arrow--prev');
+      const next = slide.querySelector('.stage-arrow--next');
+      if (prev) prev.disabled = idx === 0;
+      if (next) next.disabled = idx === total - 1;
+    }
+  }
+
+  // ── Header helpers ────────────────────────────────────────────────────────
+
+  function updateHeaderProgress(idx, total, cat) {
+    document.getElementById('headerProgress').textContent = (idx+1)+' / '+total;
+    document.getElementById('navBtnLabel').textContent = cat
+      ? cat
+      : 'Jump to category…';
+  }
+
+  function updateDropdownActive(idx) {
+    document.querySelectorAll('.header__dropdown-item').forEach((el,i) => {
+      el.classList.toggle('active', i === idx);
+    });
+  }
+
+  function closeDropdown() {
+    document.getElementById('navDropdown').classList.remove('open');
+    document.getElementById('navBtn').classList.remove('open');
+    document.getElementById('navBtn').setAttribute('aria-expanded','false');
+  }
+
+  function getVisibleSlide() {
+    return document.querySelector('.category-slide[data-cat-idx="'+categoryIndex+'"]');
+  }
+
+  // ── Cover fallback ────────────────────────────────────────────────────────
+
+  document.getElementById('scrollContainer').addEventListener('error', e => {
+    const img = e.target;
+    if (!img.classList || !img.classList.contains('syndetics-cover')) return;
+    if (img.dataset.tried !== 'mc') {
+      img.dataset.tried = 'mc';
+      img.src = img.dataset.mc;
+    } else {
+      const ph = document.createElement('div');
+      ph.className = 'book-slide__cover-placeholder';
+      ph.textContent = '📖';
+      img.parentNode.replaceChild(ph, img);
+    }
+  }, true);
+
+  // ── Sample data ───────────────────────────────────────────────────────────
+
+  const SAMPLE_ROWS = [
+    ["2026-06-01","jsmith","Jane Smith","Read a survival story","Project Hail Mary","Andy Weir","5","Absolutely could not put this down. The science felt real and the ending had me in tears in the best possible way.","9780593135204","","https://westportlibrary.org","TRUE","001"],
+    ["2026-06-02","mjones","Marcus Jones","Read a survival story","The Martian","Andy Weir","4","A masterclass in problem-solving under pressure. Funny, tense, and surprisingly emotional.","9780553418026","","https://westportlibrary.org","TRUE","002"],
+    ["2026-06-02","lford","Linda Ford","Read a survival story","Into Thin Air","Jon Krakauer","5","Gripping from page one. You know how it ends and you still can't stop reading.","9780385494786","","https://westportlibrary.org","TRUE","003"],
+    ["2026-06-03","dlee","Diane Lee","Read a book with a totally unhinged character","Gone Girl","Gillian Flynn","5","Amy Dunne is one of the most compelling and terrifying characters I have ever encountered in fiction.","9780307588371","","https://westportlibrary.org","TRUE","004"],
+    ["2026-06-03","trobinson","Tom Robinson","Read a book with a totally unhinged character","We Need to Talk About Kevin","Lionel Shriver","5","Devastating and brilliant. Eva's voice is unreliable in the best possible way. Stayed with me for weeks.","9780062240347","","https://westportlibrary.org","TRUE","005"],
+    ["2026-06-04","spatel","Sunita Patel","Read a book about finding your people","The House in the Cerulean Sea","TJ Klune","5","Warm, cozy, and quietly radical. Found family at its absolute best. I bought copies for three friends.","9781250217318","","https://westportlibrary.org","TRUE","006"],
+    ["2026-06-04","kchen","Kevin Chen","Read a book about family rivalry","Pachinko","Min Jin Lee","5","Generational, sweeping, heartbreaking. Each character felt completely real.","9781455563937","","https://westportlibrary.org","TRUE","007"],
+    ["2026-06-04","rngozi","Rachel Ngozi","Read a book about family rivalry","Educated","Tara Westover","5","One of the most remarkable memoirs I have ever read. Stayed with me long after the last page.","9780399590504","","https://westportlibrary.org","TRUE","008"],
+    ["2026-06-05","amartin","Alice Martin","Read a book about a culture clash","Americanah","Chimamanda Ngozi Adichie","5","Sharp, funny, and essential. Ifemelu's observations on race in America are as relevant as ever.","9780307455925","","https://westportlibrary.org","TRUE","009"],
+    ["2026-06-05","bwilson","Beth Wilson","Read a book that refers to another book","James","Percival Everett","5","A stunning reimagining that gives Jim a full interiority Twain never allowed. Essential reading.","9780385550369","","https://westportlibrary.org","TRUE","010"],
+    ["2026-06-06","pgrant","Paul Grant","Read a book about a character who is aging gracefully (or disgracefully)","The Thursday Murder Club","Richard Osman","4","Clever, funny, and genuinely surprising. These four retirees are more compelling than most younger protagonists.","9781984880963","","https://westportlibrary.org","TRUE","011"],
+    ["2026-06-07","jsmith","Jane Smith","Read a book about (or that gives you) an epiphany","When Breath Becomes Air","Paul Kalanithi","5","Wept openly. A profound meditation on mortality and meaning that reorients how you see your own life.","9780812988406","","https://westportlibrary.org","TRUE","012"],
+    ["2026-06-07","mjones","Marcus Jones","Read a book set in the wilderness","Wild","Cheryl Strayed","4","Raw and honest. Strayed doesn't romanticize the trail or herself, which makes it all the more powerful.","9780307592736","","https://westportlibrary.org","TRUE","013"],
+  ];
+
+  // ── Categories ────────────────────────────────────────────────────────────
+
+  const categories = [
+    "Read a book with a sweet treat on the cover",
+    "Read a book you found on Novelist",
+    "Read a book set before 1776",
+    "Read a book that has a Westport connection",
+    "Read a book about someone on the run",
+    "Read a book that takes place in less than 10 days or more than 10 years",
+    "Read a book about mistaken identity",
+    "Read a book set in the wilderness",
+    "Read a book about (or that gives you) an epiphany",
+    "Read a book written by multiple authors",
+    "Read a book that explores influencer culture",
+    "Read a book that makes you feel FOMO",
+    "Read a book about a character who is aging gracefully (or disgracefully)",
+    "Read a book about a birth or a death",
+    "Read a book about a culture clash",
+    "Read a book about finding your people",
+    "Read a book about family rivalry",
+    "Read a book that you would take with you to a deserted island",
+    "Read a survival story",
+    "Read a book with a totally unhinged character",
+    "Read a book that refers to another book",
+    "Read a book about defying or embracing tradition",
+    "Read a book based on myths and legends of yore",
+    "Read a book that horrifies you",
+    "Read a book that you hoped would work for a different category",
+  ];
+
+  // ── Load ──────────────────────────────────────────────────────────────────
+
+  async function loadData() {
+    if (new URLSearchParams(window.location.search).has('test')) {
+      const ebc = {};
+      categories.forEach(c => { ebc[c] = []; });
+      SAMPLE_ROWS.forEach(r => { if (Object.prototype.hasOwnProperty.call(ebc, r[3])) ebc[r[3]].push(r); });
+      render(categories, ebc);
+      return;
+    }
+
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRGYu9wBs7mJjvQhJt-MIcBejYVeXSSPbREaslRHty3WmXRepVk7i99OqmmmoWNjoQsmXbCIBiQnwiu/pub?gid=1750986735&single=true&output=csv";
+    let rawText;
+    try {
+      const res = await fetch(csvUrl + '&cb=' + Date.now());
+      rawText = await res.text();
+    } catch(err) {
+      document.getElementById('scrollContainer').innerHTML =
+        '<div class="status-bar"><span style="font-size:0.9rem;color:rgba(255,255,255,0.6)">Could not load submissions. Check back soon.</span></div>';
+      console.error('CSV fetch error:', err);
+      return;
+    }
+
+    const lines = rawText.split('\n');
+    const ebc = {};
+    categories.forEach(c => { ebc[c] = []; });
+
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      const row = parseCSVRow(line);
+      if (!isPublished(row[11])) continue;
+      const stars = parseInt(row[6], 10);
+      if (isNaN(stars) || stars < 4) continue;
+      if (!(row[4]||'').trim() || !(row[7]||'').trim()) continue;
+      const cat = (row[3]||'').trim();
+      if (Object.prototype.hasOwnProperty.call(ebc, cat)) ebc[cat].push(row);
+    }
+
+    render(categories, ebc);
+  }
+
+  loadData();
+</script>
+</body>
+</html>
