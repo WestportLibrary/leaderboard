@@ -1334,55 +1334,56 @@
 
     function positionBooks(dragDelta) {
       const { activeW, activeH, spineW, spineH, centerX } = getLayout();
-      const bookPerPx = 1 / (spineW + 4);
-      const floatIdx  = activeIdx - dragDelta * bookPerPx;
+      const bookPerPx  = 1 / (spineW + 4);
+      const floatIdx   = activeIdx - dragDelta * bookPerPx;
       const nearestIdx = Math.max(0, Math.min(N - 1, Math.round(floatIdx)));
       const gap = 4;
 
       books.forEach((book, i) => {
-        const delta = i - floatIdx;
+        const delta    = i - floatIdx;
         const isActive = Math.abs(delta) < 0.5;
 
-        // Width and height interpolation
-        const t = Math.max(0, 1 - Math.abs(delta)); // 1 at active, 0 further away
-        const w = spineW + (activeW - spineW) * Math.max(0, 1 - Math.abs(delta));
-        const h = spineH + (activeH - spineH) * Math.max(0, 1 - Math.abs(delta));
+        // Fixed sizes — no interpolation so text never scrunches
+        const w = isActive ? activeW : spineW;
+        const h = isActive ? activeH : spineH;
 
-        // X position: pack books together
+        // X position based on integer distance from active
+        const intDelta = i - nearestIdx;
         let x;
-        if (delta === 0) {
-          x = centerX - w / 2;
-        } else if (delta < 0) {
-          // left of active
-          x = centerX - activeW / 2 - (spineW + gap) * (-delta) - spineW / 2;
+        if (intDelta === 0) {
+          x = centerX - activeW / 2 + (floatIdx - nearestIdx) * -(spineW + gap);
+        } else if (intDelta < 0) {
+          x = centerX - activeW / 2 + (floatIdx - nearestIdx) * -(spineW + gap)
+            - (spineW + gap) * (-intDelta);
         } else {
-          x = centerX + activeW / 2 + (spineW + gap) * (delta - 1) + gap;
+          x = centerX + activeW / 2 + (floatIdx - nearestIdx) * -(spineW + gap)
+            + (spineW + gap) * (intDelta - 1) + gap;
         }
 
-        const opacity = Math.max(0.25, 1 - Math.abs(delta) * 0.18);
+        const opacity = Math.max(0.2, 1 - Math.abs(delta) * 0.15);
         const zIndex  = Math.round(100 - Math.abs(delta) * 10);
 
-        book.style.width   = w + 'px';
-        book.style.height  = h + 'px';
-        book.style.left    = x + 'px';
-        book.style.bottom  = 'calc(18% + 8px)';
-        book.style.opacity = opacity;
-        book.style.zIndex  = zIndex;
-        book.style.transform = `perspective(400px) rotateY(${delta * -3}deg)`;
-        book.classList.toggle('active', Math.abs(delta) < 0.5);
+        book.style.width     = w + 'px';
+        book.style.height    = h + 'px';
+        book.style.left      = x + 'px';
+        book.style.bottom    = 'calc(18% + 8px)';
+        book.style.opacity   = opacity;
+        book.style.zIndex    = zIndex;
+        book.style.transform = `perspective(600px) rotateY(${intDelta * -4}deg)`;
+        book.classList.toggle('active', isActive);
       });
 
       // Update label for nearest book
-      const ni = Math.max(0, Math.min(N - 1, nearestIdx));
+      const ni  = Math.max(0, Math.min(N - 1, nearestIdx));
       const cat   = categories[ni];
       const count = (entriesByCategory[cat] || []).length;
       nameEl.textContent = cat;
       if (count === 0) {
-        metaEl.textContent  = 'No reviews yet';
-        metaEl.className = 'rolodex-label__meta rolodex-label__meta--empty';
+        metaEl.textContent = 'No reviews yet';
+        metaEl.className   = 'rolodex-label__meta rolodex-label__meta--empty';
       } else {
-        metaEl.textContent  = count + ' review' + (count > 1 ? 's' : '');
-        metaEl.className = 'rolodex-label__meta';
+        metaEl.textContent = count + ' review' + (count > 1 ? 's' : '');
+        metaEl.className   = 'rolodex-label__meta';
       }
       return nearestIdx;
     }
