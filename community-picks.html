@@ -102,32 +102,32 @@
     .home-screen__top {
       text-align: center;
       flex-shrink: 0;
-      padding: clamp(20px, 3vh, 40px) 24px clamp(8px, 1.5vh, 20px);
+      padding: clamp(10px, 1.5vh, 32px) 24px clamp(6px, 1vh, 16px);
     }
 
     .home-screen__eyebrow {
       font-family: 'Catamaran', sans-serif;
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       font-weight: 700;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: rgba(255,255,255,0.45);
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
 
     .home-screen__headline {
       font-family: 'Catamaran', sans-serif;
       font-weight: 900;
-      font-size: clamp(2rem, 7vw, 4rem);
+      font-size: clamp(1.6rem, 6vw, 4rem);
       line-height: 1.0;
       letter-spacing: -0.04em;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
 
     .home-screen__tagline {
-      font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+      font-size: clamp(0.78rem, 1.6vw, 0.95rem);
       color: rgba(255,255,255,0.6);
-      line-height: 1.6;
+      line-height: 1.5;
       max-width: 420px;
       margin: 0 auto;
     }
@@ -147,52 +147,42 @@
     .rolodex-label {
       flex-shrink: 0;
       text-align: center;
-      padding: 0 32px clamp(10px, 2vh, 20px);
+      padding: 0 24px clamp(6px, 1.2vh, 16px);
       z-index: 20;
     }
 
     .rolodex-label__name {
       font-family: 'Catamaran', sans-serif;
       font-weight: 900;
-      font-size: clamp(1.1rem, 3vw, 2rem);
+      font-size: clamp(0.95rem, 3vw, 2rem);
       line-height: 1.2;
       letter-spacing: -0.02em;
       color: #fff;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
       min-height: 1.3em;
     }
 
     .rolodex-label__meta {
       font-family: 'Catamaran', sans-serif;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--mango);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
-    .rolodex-label__meta--empty { color: rgba(255,255,255,0.3); }
-
-    .rolodex-label__hint {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(0,0,0,0.35);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 20px;
-      padding: 8px 22px;
+    .rolodex-label__tap {
       font-family: 'Catamaran', sans-serif;
-      font-weight: 700;
-      font-size: 0.82rem;
-      letter-spacing: 0.06em;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: #fff;
-      cursor: pointer;
-      transition: background 0.15s;
+      color: rgba(255,255,255,0.3);
+      margin-top: 4px;
     }
 
-    .rolodex-label__hint:hover { background: rgba(0,0,0,0.55); }
+    .rolodex-label__hint { display: none; }
 
     .rolodex-stage {
       flex: 1;
@@ -236,23 +226,49 @@
       -webkit-user-select: none;
       z-index: 3;
       cursor: pointer;
-      transition: filter 0.2s;
     }
 
     .book__inner {
       width: 100%;
       height: 100%;
-      border-radius: 2px 4px 4px 2px;
+      border-radius: 2px 5px 5px 2px;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
       position: relative;
-      /* spine shadow */
       box-shadow:
-        inset -4px 0 8px rgba(0,0,0,0.35),
-        inset 2px 0 4px rgba(255,255,255,0.1),
-        3px 6px 20px rgba(0,0,0,0.5);
+        inset -6px 0 12px rgba(0,0,0,0.4),
+        inset 3px 0 6px rgba(255,255,255,0.15),
+        4px 8px 24px rgba(0,0,0,0.55);
+    }
+
+    /* Page-edge illusion on right side */
+    .book__inner::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: 6px;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.06) 0px,
+        rgba(255,255,255,0.06) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      pointer-events: none;
+    }
+
+    /* Spine binding line */
+    .book__inner::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 5px;
+      background: linear-gradient(to right, rgba(0,0,0,0.35), rgba(0,0,0,0.1));
+      border-radius: 2px 0 0 2px;
+      pointer-events: none;
+      z-index: 2;
     }
 
     /* Spine text for non-active books */
@@ -261,39 +277,171 @@
       transform: rotate(180deg);
       font-family: 'Catamaran', sans-serif;
       font-weight: 800;
-      font-size: clamp(0.6rem, 1.1vw, 0.85rem);
+      font-size: clamp(0.65rem, 1.2vw, 0.9rem);
       line-height: 1.2;
-      color: rgba(0,0,0,0.65);
-      padding: 10px 4px;
+      color: rgba(0,0,0,0.7);
+      padding: 12px 6px;
       text-align: center;
       overflow: hidden;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
       position: relative;
       z-index: 1;
     }
 
-    /* Active book faces out — wider, text horizontal */
+    /* Active book faces out */
     .book.active .book__inner {
       border-radius: 3px 6px 6px 3px;
       box-shadow:
-        -5px 0 0 rgba(0,0,0,0.2),
-        inset 3px 0 6px rgba(255,255,255,0.15),
-        12px 20px 48px rgba(0,0,0,0.7);
+        -6px 0 0 rgba(0,0,0,0.25),
+        inset 4px 0 8px rgba(255,255,255,0.2),
+        16px 24px 56px rgba(0,0,0,0.75);
     }
 
     .book.active .book__spine-text {
       writing-mode: horizontal-tb;
       transform: none;
-      font-size: clamp(0.82rem, 1.6vw, 1.1rem);
-      color: rgba(0,0,0,0.8);
+      font-size: clamp(1rem, 2.2vw, 1.4rem);
+      color: rgba(0,0,0,0.85);
       font-weight: 900;
-      padding: 16px 14px;
-      -webkit-line-clamp: 5;
+      padding: 20px 16px;
+      -webkit-line-clamp: 6;
+      line-height: 1.35;
     }
 
-    .rolodex-hint-text {
+    /* ─── BOOK DESCRIPTION & READ MORE ──────────────────────────── */
+    .book-slide__description {
+      font-size: clamp(0.82rem, 1.4vw, 0.95rem);
+      color: rgba(255,255,255,0.6);
+      line-height: 1.7;
+      margin-top: -4px;
+    }
+
+    .book-slide__description-text {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .book-slide__description-text.expanded {
+      display: block;
+      -webkit-line-clamp: unset;
+    }
+
+    .book-slide__read-more {
+      background: none;
+      border: none;
+      color: var(--mint);
+      font-family: 'Catamaran', sans-serif;
+      font-weight: 700;
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 4px 0 0;
+      display: inline-block;
+    }
+
+    .book-slide__read-more:hover { opacity: 0.8; }
+
+    /* ─── ALSO USED FOR ──────────────────────────────────────────── */
+    .book-slide__also {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.6;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin-top: 4px;
+    }
+
+    .book-slide__also strong {
+      color: rgba(255,255,255,0.6);
+      font-weight: 600;
+      display: block;
+      margin-bottom: 2px;
+      font-family: 'Catamaran', sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ─── MOBILE DESCRIPTION MODAL ───────────────────────────────── */
+    .desc-modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 500;
+      backdrop-filter: blur(4px);
+    }
+
+    .desc-modal-backdrop.open { display: block; }
+
+    .desc-modal {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #1a1a24;
+      border-radius: 16px 16px 0 0;
+      padding: 24px 24px 40px;
+      z-index: 501;
+      max-height: 75vh;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    .desc-modal-backdrop.open .desc-modal {
+      transform: translateY(0);
+    }
+
+    .desc-modal__handle {
+      width: 40px;
+      height: 4px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 2px;
+      margin: 0 auto 20px;
+    }
+
+    .desc-modal__title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .desc-modal__author {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 16px;
+    }
+
+    .desc-modal__text {
+      font-size: 0.9rem;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .desc-modal__close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #fff;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
       position: absolute;
       bottom: 4px;
       left: 50%;
@@ -757,8 +905,46 @@
       .book-slide__review { -webkit-line-clamp: 3; }
       .book-slide__title { font-size: clamp(1.2rem, 5.5vw, 1.6rem); }
 
+      /* Keep arrows within the cover area on mobile */
+      .stage-arrow {
+        top: 21vh;
+        transform: none;
+      }
       .stage-arrow--prev { left: 6px; }
       .stage-arrow--next { right: 6px; }
+
+      /* Hide dots on mobile — arrows and swipe are sufficient */
+      .book-dots { display: none; }
+
+      /* Add bottom padding so borrow button clears the scroll hint */
+      .book-slide__info {
+        padding-bottom: 56px;
+      }
+
+      /* Home screen — compress everything, maximize shelf */
+      .home-screen__eyebrow { display: none; }
+      .home-screen__headline {
+        font-size: clamp(1.4rem, 7vw, 2rem);
+        margin-bottom: 0;
+      }
+      .home-screen__top {
+        padding: 8px 16px 4px;
+      }
+      .rolodex-label {
+        padding: 0 16px 4px;
+      }
+      .rolodex-label__name {
+        font-size: clamp(0.9rem, 4vw, 1.2rem);
+      }
+
+      .shelf-line,
+      .shelf-shadow {
+        bottom: 2%;
+      }
+
+      .book {
+        bottom: calc(2% + 8px);
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -810,10 +996,20 @@
     <div class="rolodex-label" id="rolodexLabel">
       <div class="rolodex-label__name" id="rolodexName">—</div>
       <div class="rolodex-label__meta" id="rolodexMeta"></div>
-      <div class="rolodex-label__hint" id="rolodexBtn">Browse these picks →</div>
+      <div class="rolodex-label__tap">Tap book to browse</div>
     </div>
     <div class="rolodex-stage" id="rolodexStage"></div>
-    <div class="rolodex-hint-text">Drag to spin</div>
+  </div>
+</div>
+
+<!-- ─── DESCRIPTION MODAL (mobile) ───────────────────────────────────── -->
+<div class="desc-modal-backdrop" id="descModalBackdrop">
+  <div class="desc-modal" id="descModal">
+    <div class="desc-modal__handle"></div>
+    <button class="desc-modal__close" id="descModalClose" aria-label="Close">✕</button>
+    <div class="desc-modal__title" id="descModalTitle"></div>
+    <div class="desc-modal__author" id="descModalAuthor"></div>
+    <div class="desc-modal__text" id="descModalText"></div>
   </div>
 </div>
 
@@ -876,7 +1072,39 @@
 
   // ── Build HTML ────────────────────────────────────────────────────────────
 
-  function buildBookSlide(row, catName) {
+  // ── Google Books description cache ───────────────────────────────────────
+  const descCache = {};
+
+  async function fetchDescription(isbn, title, author) {
+    if (!isbn) return null;
+    if (descCache[isbn] !== undefined) return descCache[isbn];
+    try {
+      const res  = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(isbn)}&maxResults=1`);
+      const data = await res.json();
+      const desc = data?.items?.[0]?.volumeInfo?.description || null;
+      descCache[isbn] = desc;
+      return desc;
+    } catch {
+      descCache[isbn] = null;
+      return null;
+    }
+  }
+
+  // ── Build cross-challenge index: isbn → [categories] ─────────────────────
+  function buildIsbnIndex(categories, entriesByCategory) {
+    const index = {}; // isbn → Set of category names
+    categories.forEach(cat => {
+      (entriesByCategory[cat] || []).forEach(row => {
+        const isbn = (row[8] || '').trim();
+        if (!isbn) return;
+        if (!index[isbn]) index[isbn] = new Set();
+        index[isbn].add(cat);
+      });
+    });
+    return index;
+  }
+
+  function buildBookSlide(row, catName, isbnIndex) {
     const title   = row[4] || '';
     const author  = row[5] || '';
     const stars   = parseInt(row[6],10) || 0;
@@ -898,6 +1126,24 @@
       ? `<a class="book-slide__catalog" href="${escHtml(catalog)}" target="_blank" rel="noopener">Borrow it →</a>`
       : '';
 
+    // Cross-challenge usage
+    let alsoHTML = '';
+    if (isbn && isbnIndex && isbnIndex[isbn]) {
+      const others = [...isbnIndex[isbn]].filter(c => c !== catName);
+      if (others.length > 0) {
+        alsoHTML = `<div class="book-slide__also">
+          <strong>Also used for</strong>
+          ${others.map(c => escHtml(c)).join('<br>')}
+        </div>`;
+      }
+    }
+
+    // Description placeholder — will be populated async
+    const descId = `desc-${isbn || Math.random().toString(36).slice(2)}`;
+    const descHTML = `<div class="book-slide__description" id="${descId}" data-isbn="${escHtml(isbn)}" data-title="${escHtml(title)}" data-author="${escHtml(author)}">
+      <div class="book-slide__description-text"></div>
+    </div>`;
+
     return `<article class="book-slide">
       <div class="book-slide__cover-wrap">${coverHTML}</div>
       <div class="book-slide__info">
@@ -905,14 +1151,16 @@
         ${starsHTML(stars)}
         <div class="book-slide__title">${escHtml(title)}</div>
         <div class="book-slide__author">${escHtml(author)}</div>
+        ${descHTML}
         <p class="book-slide__review">${escHtml(review)}</p>
         <div class="book-slide__patron">— ${escHtml(patron)}</div>
+        ${alsoHTML}
         ${catalogBtn}
       </div>
     </article>`;
   }
 
-  function buildCategorySlide(cat, entries, catIdx, totalCats) {
+  function buildCategorySlide(cat, entries, catIdx, totalCats, isbnIndex) {
     const id      = slug(cat);
     const isLast  = catIdx === totalCats - 1;
 
@@ -924,7 +1172,7 @@
           <a href="/reading-challenge/submit.html">Be the first to submit one!</a></div>
       </div>`;
     } else {
-      const booksHTML = entries.map(r => buildBookSlide(r, cat)).join('');
+      const booksHTML = entries.map(r => buildBookSlide(r, cat, isbnIndex)).join('');
       stageContent = `
         <button class="stage-arrow stage-arrow--prev" data-cat="${id}" aria-label="Previous book" disabled>&#8592;</button>
         <div class="book-viewport">
@@ -959,10 +1207,13 @@
     const container = document.getElementById('scrollContainer');
     const total     = categories.length;
 
+    // Build cross-challenge ISBN index
+    const isbnIndex = buildIsbnIndex(categories, entriesByCategory);
+
     // Build slides
     let html = '';
     categories.forEach((cat, i) => {
-      html += buildCategorySlide(cat, entriesByCategory[cat]||[], i, total);
+      html += buildCategorySlide(cat, entriesByCategory[cat]||[], i, total, isbnIndex);
     });
     container.innerHTML = html;
 
@@ -981,6 +1232,66 @@
     attachEvents(categories, entriesByCategory, total);
     buildWheel(categories, entriesByCategory);
     showHome();
+
+    // Populate descriptions async — fetch Google Books as slides are viewed
+    populateDescriptions();
+  }
+
+  // ── Populate descriptions ─────────────────────────────────────────────────
+
+  function isMobile() { return window.innerWidth < 640; }
+
+  function populateDescriptions() {
+    const els = document.querySelectorAll('.book-slide__description');
+    els.forEach(el => {
+      const isbn   = el.dataset.isbn;
+      const title  = el.dataset.title;
+      const author = el.dataset.author;
+      if (!isbn) return;
+
+      fetchDescription(isbn, title, author).then(desc => {
+        if (!desc) { el.style.display = 'none'; return; }
+
+        const textEl = el.querySelector('.book-slide__description-text');
+        textEl.textContent = desc;
+
+        const btn = document.createElement('button');
+        btn.className   = 'book-slide__read-more';
+        btn.textContent = 'Read more';
+        el.appendChild(btn);
+
+        btn.addEventListener('click', () => {
+          if (window.innerWidth < 640) {
+            document.getElementById('descModalTitle').textContent  = title;
+            document.getElementById('descModalAuthor').textContent = author;
+            document.getElementById('descModalText').textContent   = desc;
+            document.getElementById('descModalBackdrop').classList.add('open');
+          } else {
+            const expanded = textEl.classList.toggle('expanded');
+            btn.textContent = expanded ? 'Show less' : 'Read more';
+          }
+        });
+
+        // Desktop only: hide button if text fits without truncation
+        if (window.innerWidth >= 640) {
+          // Use setTimeout to check after container is visible
+          setTimeout(() => {
+            if (textEl.scrollHeight <= textEl.clientHeight + 2) {
+              btn.style.display = 'none';
+            }
+          }, 500);
+        }
+      });
+    });
+
+    // Modal close
+    const backdrop = document.getElementById('descModalBackdrop');
+    document.getElementById('descModalClose').addEventListener('click', () => {
+      backdrop.classList.remove('open');
+    });
+    backdrop.addEventListener('click', e => {
+      if (e.target === backdrop) backdrop.classList.remove('open');
+    });
   }
 
   // ── Events ────────────────────────────────────────────────────────────────
@@ -1146,6 +1457,22 @@
 
   // ── Sample data ───────────────────────────────────────────────────────────
 
+  const SAMPLE_DESCRIPTIONS = {
+    "9780593135204": "A lone astronaut must save the earth from disaster in this propulsive science fiction thriller. Ryland Grace wakes up on a spacecraft with no memory of how he got there — and realizes he may be humanity's last hope.",
+    "9780553418026": "An astronaut stranded alone on Mars after a mission gone wrong must use his ingenuity and humor to survive. A love letter to problem-solving, science, and the will to keep going.",
+    "9780385494786": "A harrowing first-person account of the 1996 Mount Everest disaster that claimed eight lives. Krakauer, who was on the mountain, reconstructs the events with meticulous detail and unflinching honesty.",
+    "9780307588371": "On the morning of Nick and Amy Dunne's fifth wedding anniversary, Amy disappears. The story that unravels is one of the most unsettling psychological thrillers of the decade.",
+    "9780062240347": "Told through the eyes of a mother whose son has committed a school shooting, this novel asks difficult questions about guilt, complicity, and what we owe each other.",
+    "9781250217318": "A caseworker for magical beings discovers something peculiar about an orphanage on a distant island. A warm, slow-burning fantasy about found family and the courage to be different.",
+    "9781455563937": "Four generations of a Korean family navigate Japanese occupation, war, poverty, and identity. A sweeping epic that asks what it means to belong somewhere — and to yourself.",
+    "9780399590504": "A memoir about growing up in a survivalist family in rural Idaho, and the long road to education and self-invention. One of the most remarkable coming-of-age stories in recent memory.",
+    "9780307455925": "Ifemelu and Obinze are young and in love in Lagos before life separates them across continents. A razor-sharp, deeply funny novel about race, identity, and what home means.",
+    "9780385550369": "A reimagining of Huckleberry Finn told from the perspective of Jim, the enslaved man. Percival Everett gives Jim a rich interior life, a secret language, and a moral authority Twain never allowed.",
+    "9781984880963": "Four residents of a retirement community form an unlikely detective club — and stumble onto a real murder. Funny, clever, and genuinely moving.",
+    "9780812988406": "A neurosurgeon diagnosed with terminal cancer reflects on mortality, medicine, and meaning. Brief and devastating in the best possible way.",
+    "9780307592736": "After the death of her baby and the collapse of her marriage, Cheryl Strayed hikes over a thousand miles of the Pacific Crest Trail alone. Raw, funny, and ultimately redemptive.",
+  };
+
   const SAMPLE_ROWS = [
     ["2026-06-01","jsmith","Jane Smith","Read a survival story","Project Hail Mary","Andy Weir","5","Absolutely could not put this down. The science felt real and the ending had me in tears in the best possible way.","9780593135204","","https://westportlibrary.org","TRUE","001"],
     ["2026-06-02","mjones","Marcus Jones","Read a survival story","The Martian","Andy Weir","4","A masterclass in problem-solving under pressure. Funny, tense, and surprisingly emotional.","9780553418026","","https://westportlibrary.org","TRUE","002"],
@@ -1160,6 +1487,9 @@
     ["2026-06-06","pgrant","Paul Grant","Read a book about a character who is aging gracefully (or disgracefully)","The Thursday Murder Club","Richard Osman","4","Clever, funny, and genuinely surprising. These four retirees are more compelling than most younger protagonists.","9781984880963","","https://westportlibrary.org","TRUE","011"],
     ["2026-06-07","jsmith","Jane Smith","Read a book about (or that gives you) an epiphany","When Breath Becomes Air","Paul Kalanithi","5","Wept openly. A profound meditation on mortality and meaning that reorients how you see your own life.","9780812988406","","https://westportlibrary.org","TRUE","012"],
     ["2026-06-07","mjones","Marcus Jones","Read a book set in the wilderness","Wild","Cheryl Strayed","4","Raw and honest. Strayed doesn't romanticize the trail or herself, which makes it all the more powerful.","9780307592736","","https://westportlibrary.org","TRUE","013"],
+    ["2026-06-08","lford","Linda Ford","Read a book that you would take with you to a deserted island","The Martian","Andy Weir","5","Perfect deserted island read — it's literally about surviving alone with just your wits.","9780553418026","","https://westportlibrary.org","TRUE","014"],
+    ["2026-06-08","dlee","Diane Lee","Read a book about defying or embracing tradition","Educated","Tara Westover","5","The definition of defying tradition. Westover rebuilt herself from the ground up against every odd.","9780399590504","","https://westportlibrary.org","TRUE","015"],
+    ["2026-06-09","kchen","Kevin Chen","Read a book about someone on the run","Gone Girl","Gillian Flynn","4","Both characters spend the whole book running from themselves. Fits the category in the most twisted way.","9780307588371","","https://westportlibrary.org","TRUE","016"],
   ];
 
   // ── Categories ────────────────────────────────────────────────────────────
@@ -1196,6 +1526,9 @@
 
   async function loadData() {
     if (new URLSearchParams(window.location.search).has('test')) {
+      // In test mode, use dummy descriptions instead of hitting Google Books
+      Object.assign(descCache, SAMPLE_DESCRIPTIONS);
+
       const ebc = {};
       categories.forEach(c => { ebc[c] = []; });
       SAMPLE_ROWS.forEach(r => { if (Object.prototype.hasOwnProperty.call(ebc, r[3])) ebc[r[3]].push(r); });
@@ -1241,6 +1574,11 @@
     document.getElementById('scrollContainer').style.display = 'none';
     document.getElementById('headerNav').style.display = 'none';
     document.getElementById('headerProgress').style.display = 'none';
+    // Re-position books now that the stage has real dimensions
+    requestAnimationFrame(() => {
+      const stage = document.getElementById('rolodexStage');
+      if (stage && stage._positionBooks) stage._positionBooks();
+    });
   }
 
   function showCarousel(jumpToSlug) {
@@ -1269,7 +1607,6 @@
     const stage  = document.getElementById('rolodexStage');
     const nameEl = document.getElementById('rolodexName');
     const metaEl = document.getElementById('rolodexMeta');
-    const btn    = document.getElementById('rolodexBtn');
     const wrap   = document.getElementById('rolodexWrap');
     if (!stage) return;
 
@@ -1283,6 +1620,14 @@
     shelfShadow.className = 'shelf-shadow';
     stage.appendChild(shelfShadow);
 
+  // Strip common prefixes for spine labels
+  function spineLabel(cat) {
+    return cat
+      .replace(/^read a book (that |about |with |set |based |written |you |from )/i, '')
+      .replace(/^read /i, '')
+      .trim();
+  }
+
     // Build books
     const books = categories.map((cat, i) => {
       const el = document.createElement('div');
@@ -1291,7 +1636,7 @@
       el.dataset.slug = slug(cat);
       const color = BOOK_COLORS[i % BOOK_COLORS.length];
       el.innerHTML = `<div class="book__inner" style="background:${color}">
-        <div class="book__spine-text">${escHtml(cat)}</div>
+        <div class="book__spine-text" data-full="${escHtml(cat)}" data-short="${escHtml(spineLabel(cat))}">${escHtml(spineLabel(cat))}</div>
       </div>`;
       stage.appendChild(el);
       return el;
@@ -1307,10 +1652,16 @@
     function getLayout() {
       const W = getStageW();
       const H = getStageH();
-      const activeW  = Math.min(W * 0.22, 160);
-      const activeH  = activeW * 1.6;
-      const spineW   = Math.max(28, Math.min(48, W * 0.04));
-      const spineH   = Math.min(activeH * 0.85, H * 0.55);
+      const isMob = window.innerWidth < 640;
+      // On mobile, drive from height so books fill the stage vertically
+      const activeH = isMob
+        ? Math.min(H * 0.90, 560)
+        : Math.min(W * 0.38 * 1.55, 430);
+      const activeW = isMob
+        ? activeH / 1.55
+        : Math.min(W * 0.38, 280);
+      const spineW   = Math.max(36, Math.min(56, W * 0.055));
+      const spineH   = Math.min(activeH * 0.88, H * 0.7);
       const centerX  = W / 2;
       return { W, H, activeW, activeH, spineW, spineH, centerX };
     }
@@ -1366,7 +1717,8 @@
         book.style.width     = w + 'px';
         book.style.height    = h + 'px';
         book.style.left      = x + 'px';
-        book.style.bottom    = 'calc(18% + 8px)';
+        const shelfPct = window.innerWidth < 640 ? '2%' : '18%';
+        book.style.bottom    = `calc(${shelfPct} + 8px)`;
         book.style.opacity   = opacity;
         book.style.zIndex    = zIndex;
         book.style.transform = `perspective(600px) rotateY(${intDelta * -4}deg)`;
@@ -1402,12 +1754,11 @@
       });
     });
 
+    // Expose for showHome to re-trigger after visibility
+    stage._positionBooks = () => positionBooks(0);
+
     window.addEventListener('resize', () => positionBooks(0));
 
-    // Browse button
-    btn.addEventListener('click', () => {
-      showCarousel(books[activeIdx].dataset.slug);
-    });
 
     // Click book
     stage.addEventListener('click', e => {
