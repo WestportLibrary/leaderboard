@@ -1096,7 +1096,7 @@
 
       // Fallback: search by title + author
       if (title) {
-        const q   = `intitle:${encodeURIComponent(title)}${author ? '+inauthor:' + encodeURIComponent(author.split(' ').pop()) : ''}`;
+        const q   = `intitle:"${encodeURIComponent(title)}"${author ? '+inauthor:' + encodeURIComponent(author.split(' ').pop()) : ''}`;
         const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${q}&maxResults=1&key=${key}`);
         const data = await res.json();
         const desc = data?.items?.[0]?.volumeInfo?.description || null;
