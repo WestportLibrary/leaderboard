@@ -1414,6 +1414,36 @@
       setBookIndex(catSlug, i, entries.length);
     });
 
+    // ── Horizontal swipe for books ────────────────────────────────────────
+    let touchStartX = null, touchStartY = null;
+
+    container.addEventListener('touchstart', e => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    container.addEventListener('touchmove', e => {
+      if (touchStartX === null) return;
+      const dx = Math.abs(e.touches[0].clientX - touchStartX);
+      const dy = Math.abs(e.touches[0].clientY - touchStartY);
+      if (dx > dy + 4) e.preventDefault(); // lock to horizontal
+    }, { passive: false });
+
+    container.addEventListener('touchend', e => {
+      if (touchStartX === null) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      if (Math.abs(dx) > Math.abs(dy) + 4 && Math.abs(dx) > 40) {
+        const slide = getVisibleSlide();
+        if (!slide) return;
+        const catSlug = slide.dataset.slug;
+        const cat     = categories.find(c => slug(c) === catSlug);
+        const entries = entriesByCategory[cat] || [];
+        if (entries.length > 1) navigateBook(catSlug, dx < 0 ? 1 : -1, entries.length);
+      }
+      touchStartX = null; touchStartY = null;
+    }, { passive: true });
+
     // ── Scroll observer (update header) ───────────────────────────────────
     const slides = container.querySelectorAll('.category-slide');
     const io = new IntersectionObserver(entries => {
