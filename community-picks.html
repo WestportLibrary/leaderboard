@@ -1257,54 +1257,66 @@
     populateDescriptions();
   }
 
-  // ── Populate descriptions ─────────────────────────────────────────────────
+  // ── Populate descriptions for a specific slide ───────────────────────────
 
-  function isMobile() { return window.innerWidth < 640; }
+  const populatedSlugs = new Set();
 
-  function populateDescriptions() {
-    const els = document.querySelectorAll('.book-slide__description');
-    els.forEach(el => {
-      const isbn   = el.dataset.isbn;
-      const title  = el.dataset.title;
-      const author = el.dataset.author;
-      if (!isbn) return;
+  function populateSlideDescriptions(slideEl) {
+    if (!slideEl) return;
+    const id = slideEl.id;
+    if (populatedSlugs.has(id)) return;
+    populatedSlugs.add(id);
 
-      fetchDescription(isbn, title, author).then(desc => {
-        if (!desc) { el.style.display = 'none'; return; }
+    const els = slideEl.querySelectorAll('.book-slide__description');
+    // Stagger requests 300ms apart to avoid rate limiting
+    els.forEach((el, i) => {
+      setTimeout(() => {
+        const isbn   = el.dataset.isbn;
+        const title  = el.dataset.title;
+        const author = el.dataset.author;
+        if (!isbn && !title) return;
 
-        const textEl = el.querySelector('.book-slide__description-text');
-        textEl.textContent = desc;
+        fetchDescription(isbn, title, author).then(desc => {
+          if (!desc) { el.style.display = 'none'; return; }
 
-        const btn = document.createElement('button');
-        btn.className   = 'book-slide__read-more';
-        btn.textContent = 'Read more';
-        el.appendChild(btn);
+          const textEl = el.querySelector('.book-slide__description-text');
+          textEl.textContent = desc;
 
-        btn.addEventListener('click', () => {
-          if (window.innerWidth < 640) {
-            document.getElementById('descModalTitle').textContent  = title;
-            document.getElementById('descModalAuthor').textContent = author;
-            document.getElementById('descModalText').textContent   = desc;
-            document.getElementById('descModalBackdrop').classList.add('open');
-          } else {
-            const expanded = textEl.classList.toggle('expanded');
-            btn.textContent = expanded ? 'Show less' : 'Read more';
+          const btn = document.createElement('button');
+          btn.className   = 'book-slide__read-more';
+          btn.textContent = 'Read more';
+          el.appendChild(btn);
+
+          btn.addEventListener('click', () => {
+            if (window.innerWidth < 640) {
+              document.getElementById('descModalTitle').textContent  = title;
+              document.getElementById('descModalAuthor').textContent = author;
+              document.getElementById('descModalText').textContent   = desc;
+              document.getElementById('descModalBackdrop').classList.add('open');
+            } else {
+              const expanded = textEl.classList.toggle('expanded');
+              btn.textContent = expanded ? 'Show less' : 'Read more';
+            }
+          });
+
+          if (window.innerWidth >= 640) {
+            setTimeout(() => {
+              if (textEl.scrollHeight <= textEl.clientHeight + 2) {
+                btn.style.display = 'none';
+              }
+            }, 500);
           }
         });
-
-        // Desktop only: hide button if text fits without truncation
-        if (window.innerWidth >= 640) {
-          // Use setTimeout to check after container is visible
-          setTimeout(() => {
-            if (textEl.scrollHeight <= textEl.clientHeight + 2) {
-              btn.style.display = 'none';
-            }
-          }, 500);
-        }
-      });
+      }, i * 300);
     });
+  }
 
-    // Modal close
+  function populateDescriptions() {
+    // Populate first slide immediately
+    const firstSlide = document.querySelector('.category-slide');
+    populateSlideDescriptions(firstSlide);
+
+    // Modal close handlers
     const backdrop = document.getElementById('descModalBackdrop');
     document.getElementById('descModalClose').addEventListener('click', () => {
       backdrop.classList.remove('open');
@@ -1381,6 +1393,7 @@
           categoryIndex = idx;
           updateHeaderProgress(idx, total, categories[idx]);
           updateDropdownActive(idx);
+          populateSlideDescriptions(entry.target);
         }
       });
     }, { root: container, threshold: 0.5 });
