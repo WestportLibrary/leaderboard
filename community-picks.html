@@ -1079,7 +1079,7 @@
     if (!isbn) return null;
     if (descCache[isbn] !== undefined) return descCache[isbn];
     try {
-      const res  = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(isbn)}&maxResults=1`);
+      const res  = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(isbn)}&maxResults=1&key=AIzaSyCi1LSVSow7yElbgEnlFaTre22_0VkR0DA`);
       const data = await res.json();
       const desc = data?.items?.[0]?.volumeInfo?.description || null;
       descCache[isbn] = desc;
