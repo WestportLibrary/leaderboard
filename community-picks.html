@@ -1076,18 +1076,39 @@
   const descCache = {};
 
   async function fetchDescription(isbn, title, author) {
-    if (!isbn) return null;
-    if (descCache[isbn] !== undefined) return descCache[isbn];
+    if (!isbn && !title) return null;
+    const cacheKey = isbn || title;
+    if (descCache[cacheKey] !== undefined) return descCache[cacheKey];
+
+    const key = 'AIzaSyCi1LSVSow7yElbgEnlFaTre22_0VkR0DA';
+
     try {
-      const res  = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(isbn)}&maxResults=1&key=AIzaSyCi1LSVSow7yElbgEnlFaTre22_0VkR0DA`);
-      const data = await res.json();
-      const desc = data?.items?.[0]?.volumeInfo?.description || null;
-      descCache[isbn] = desc;
-      return desc;
+      // First try by ISBN
+      if (isbn) {
+        const res  = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(isbn)}&maxResults=1&key=${key}`);
+        const data = await res.json();
+        const desc = data?.items?.[0]?.volumeInfo?.description || null;
+        if (desc) {
+          descCache[cacheKey] = desc;
+          return desc;
+        }
+      }
+
+      // Fallback: search by title + author
+      if (title) {
+        const q   = `intitle:${encodeURIComponent(title)}${author ? '+inauthor:' + encodeURIComponent(author.split(' ').pop()) : ''}`;
+        const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${q}&maxResults=1&key=${key}`);
+        const data = await res.json();
+        const desc = data?.items?.[0]?.volumeInfo?.description || null;
+        descCache[cacheKey] = desc;
+        return desc;
+      }
     } catch {
-      descCache[isbn] = null;
-      return null;
+      descCache[cacheKey] = null;
     }
+
+    descCache[cacheKey] = null;
+    return null;
   }
 
   // ── Build cross-challenge index: isbn → [categories] ─────────────────────
