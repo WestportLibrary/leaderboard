@@ -1134,10 +1134,10 @@
     const catalog = (row[10]||'').trim();
     const patron  = formatDisplayName(row[2]);
 
-    const lc = isbn
-      ? 'https://secure.syndetics.com/index.aspx?isbn='+encodeURIComponent(isbn)+'/LC.GIF&client=westportpl&upc=&oclc='
-      : null;
-    const mc = lc ? lc.replace('LC.GIF','MC.GIF') : null;
+    const coverUrl = (row[9] || '').trim();
+    // Use stored cover URL, upgrading MC.GIF to LC.GIF for higher res
+    const lc = coverUrl ? coverUrl.replace('MC.GIF', 'LC.GIF') : null;
+    const mc = lc ? lc.replace('LC.GIF', 'MC.GIF') : null;
 
     const coverHTML = lc
       ? `<img class="book-slide__cover syndetics-cover" src="${lc}" data-mc="${mc}" alt="${escHtml(title)} cover" loading="lazy"/>`
