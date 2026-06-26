@@ -737,9 +737,9 @@
       background: linear-gradient(
         to top,
         rgba(0,0,0,0.96) 0%,
-        rgba(0,0,0,0.82) 45%,
-        rgba(0,0,0,0.45) 65%,
-        rgba(0,0,0,0.1) 80%,
+        rgba(0,0,0,0.88) 50%,
+        rgba(0,0,0,0.65) 70%,
+        rgba(0,0,0,0.25) 88%,
         transparent 100%
       );
       pointer-events: none;
@@ -751,7 +751,7 @@
       bottom: 0;
       left: 0;
       right: 0;
-      top: 20%; /* text zone covers 80% of the slide */
+      top: 8%; /* text zone covers 80% of the slide */
       padding: clamp(20px, 4vh, 48px) clamp(24px, 5vw, 72px) clamp(20px, 3vh, 40px);
       display: flex;
       flex-direction: column;
@@ -823,7 +823,7 @@
       color: rgba(255,255,255,0.6);
       line-height: 1.65;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 5;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
@@ -924,7 +924,7 @@
     @media (max-width: 640px) {
       /* Overlay layout — mobile typography */
       .book-slide__info {
-        top: 30%;
+        top: 15%;
         padding: 10px 16px 16px;
         gap: 5px;
         overflow: hidden;
@@ -944,7 +944,7 @@
       }
 
       .book-slide__description-inline {
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 3;
         font-size: 0.75rem;
       }
 
