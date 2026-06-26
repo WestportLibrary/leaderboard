@@ -317,7 +317,38 @@
       }
     }
 
-    /* ─── BOOK DESCRIPTION & READ MORE ──────────────────────────── */
+    /* ─── COVER THUMBNAIL OVERLAY ────────────────────────────────── */
+    .book-slide__thumb {
+      position: absolute;
+      top: 5%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      width: clamp(70px, 10vw, 120px);
+      height: auto;
+      border-radius: 3px 5px 5px 3px;
+      box-shadow:
+        -3px 0 0 rgba(0,0,0,0.2),
+        6px 10px 28px rgba(0,0,0,0.7);
+      display: block;
+      object-fit: cover;
+    }
+
+    .book-slide__thumb-placeholder {
+      position: absolute;
+      top: 5%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      width: clamp(70px, 10vw, 120px);
+      aspect-ratio: 2/3;
+      border-radius: 3px 5px 5px 3px;
+      background: rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
     .book-slide__description {
       font-size: clamp(0.82rem, 1.4vw, 0.95rem);
       color: rgba(255,255,255,0.6);
@@ -751,7 +782,7 @@
       bottom: 0;
       left: 0;
       right: 0;
-      top: 8%; /* text zone covers 80% of the slide */
+      top: 45%; /* text zone covers 80% of the slide */
       padding: clamp(20px, 4vh, 48px) clamp(24px, 5vw, 72px) clamp(20px, 3vh, 40px);
       display: flex;
       flex-direction: column;
@@ -924,7 +955,7 @@
     @media (max-width: 640px) {
       /* Overlay layout — mobile typography */
       .book-slide__info {
-        top: 15%;
+        top: 45%;
         padding: 10px 16px 16px;
         gap: 5px;
         overflow: hidden;
@@ -1214,8 +1245,13 @@
     const descId = `desc-${isbn || Math.random().toString(36).slice(2)}`;
     const descHTML = `<div class="book-slide__description-inline book-slide__description" id="${descId}" data-isbn="${escHtml(isbn)}" data-title="${escHtml(title)}" data-author="${escHtml(author)}"></div>`;
 
+    const thumbHTML = lc
+      ? `<img class="book-slide__thumb syndetics-thumb" src="${lc}" data-mc="${mc}" alt="" aria-hidden="true" loading="lazy"/>`
+      : `<div class="book-slide__thumb-placeholder" aria-hidden="true">📖</div>`;
+
     return `<article class="book-slide">
       <div class="book-slide__cover-wrap">${coverHTML}</div>
+      ${thumbHTML}
       <div class="book-slide__info">
         <div class="book-slide__category">${escHtml(catName)}</div>
         ${starsHTML(stars)}
@@ -1552,15 +1588,21 @@
 
   document.getElementById('scrollContainer').addEventListener('error', e => {
     const img = e.target;
-    if (!img.classList || !img.classList.contains('syndetics-cover')) return;
-    if (img.dataset.tried !== 'mc') {
-      img.dataset.tried = 'mc';
-      img.src = img.dataset.mc;
-    } else {
-      const ph = document.createElement('div');
-      ph.className = 'book-slide__cover-placeholder';
-      ph.textContent = '📖';
-      img.parentNode.replaceChild(ph, img);
+    if (!img.classList) return;
+    if (img.classList.contains('syndetics-cover') || img.classList.contains('syndetics-thumb')) {
+      if (img.dataset.tried !== 'mc') {
+        img.dataset.tried = 'mc';
+        img.src = img.dataset.mc;
+      } else {
+        if (img.classList.contains('syndetics-cover')) {
+          const ph = document.createElement('div');
+          ph.className = 'book-slide__cover-placeholder';
+          ph.textContent = '📖';
+          img.parentNode.replaceChild(ph, img);
+        } else {
+          img.style.display = 'none';
+        }
+      }
     }
   }, true);
 
@@ -1668,7 +1710,7 @@
       if (!isPublished(row[11])) continue;
       const stars = parseInt(row[6], 10);
       if (isNaN(stars) || stars < 4) continue;
-      if (!(row[4]||'').trim() || !(row[7]||'').trim()) continue;
+      if (!(row[4]||'').trim() || !(row[7]||'').trim() || !(row[10]||'').trim()) continue;
       const cat = (row[3]||'').trim();
       if (Object.prototype.hasOwnProperty.call(ebc, cat)) ebc[cat].push(row);
     }
