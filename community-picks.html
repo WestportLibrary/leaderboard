@@ -646,34 +646,7 @@
     }
 
     /* ─── SCROLL HINT (absolute overlay) ────────────────────────── */
-    .scroll-hint {
-      position: absolute;
-      bottom: 14px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 20;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      opacity: 0.4;
-      animation: hint-bob 2s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    @keyframes hint-bob {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50%       { transform: translateX(-50%) translateY(4px); }
-    }
-
-    .scroll-hint svg { display: block; }
-    .scroll-hint span {
-      font-family: 'Catamaran', sans-serif;
-      font-size: 0.58rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
+    .scroll-hint { display: none; }
 
     /* Arrow buttons */
     .stage-arrow {
@@ -778,13 +751,14 @@
       bottom: 0;
       left: 0;
       right: 0;
-      top: 30%; /* text zone starts 30% from top — fills most of the cover */
-      padding: clamp(20px, 4vh, 48px) clamp(24px, 5vw, 72px) clamp(28px, 4vh, 52px);
+      top: 20%; /* text zone covers 80% of the slide */
+      padding: clamp(20px, 4vh, 48px) clamp(24px, 5vw, 72px) clamp(20px, 3vh, 40px);
       display: flex;
       flex-direction: column;
-      justify-content: flex-end; /* content sits at the bottom of this zone */
-      gap: clamp(8px, 1.2vh, 16px);
+      justify-content: flex-end;
+      gap: clamp(6px, 1vh, 14px);
       z-index: 2;
+      overflow: hidden;
     }
 
     .book-slide__stars {
@@ -859,10 +833,6 @@
       font-style: italic;
       line-height: 1.7;
       color: rgba(255,255,255,0.85);
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
     }
 
     .book-slide__patron {
@@ -872,6 +842,26 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: rgba(255,255,255,0.35);
+    }
+
+    /* ─── ALSO USED FOR ──────────────────────────────────────────── */
+    .book-slide__also {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.6;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .book-slide__also strong {
+      color: rgba(255,255,255,0.6);
+      font-weight: 700;
+      display: block;
+      margin-bottom: 2px;
+      font-family: 'Catamaran', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
     }
 
     .book-slide__category {
@@ -932,10 +922,10 @@
 
     /* ─── MOBILE ADJUSTMENTS ─────────────────────────────────────── */
     @media (max-width: 640px) {
-      /* Overlay layout — mobile typography tightened to fit viewport */
+      /* Overlay layout — mobile typography */
       .book-slide__info {
-        top: 40%; /* slightly lower on mobile since screen is taller relative to width */
-        padding: 12px 16px 20px;
+        top: 30%;
+        padding: 10px 16px 16px;
         gap: 5px;
         overflow: hidden;
       }
@@ -949,18 +939,17 @@
       }
 
       .book-slide__review {
-        -webkit-line-clamp: 2;
         font-size: 0.82rem;
         line-height: 1.5;
       }
 
       .book-slide__description-inline {
-        -webkit-line-clamp: 1;
+        -webkit-line-clamp: 2;
         font-size: 0.75rem;
       }
 
       .book-slide__also {
-        display: none; /* hide on mobile to save space */
+        font-size: 0.7rem;
       }
 
       /* Arrows — indicators only, no tap */
@@ -1116,7 +1105,23 @@
 
   // ── Build HTML ────────────────────────────────────────────────────────────
 
-  // ── Google Books description cache ───────────────────────────────────────
+  // ── Clean Google Books descriptions ──────────────────────────────────────
+  function cleanDescription(desc) {
+    if (!desc) return null;
+    // Split into sentences/lines and filter out marketing copy
+    const lines = desc.split(/\n+/).map(l => l.trim()).filter(Boolean);
+    const clean = lines.filter(line => {
+      // Remove lines that are mostly uppercase (marketing copy)
+      const upperRatio = (line.match(/[A-Z]/g) || []).length / line.length;
+      if (upperRatio > 0.5 && line.length > 20) return false;
+      // Remove lines with asterisks, bullet marketing patterns
+      if (/\*{1,}/.test(line)) return false;
+      // Remove lines that are just awards/bestseller lists
+      if (/bestseller|#\d+|starred review|praise for/i.test(line) && line.length < 80) return false;
+      return true;
+    });
+    return clean.length > 0 ? clean.join(' ') : null;
+  }
   const descCache = {};
 
   async function fetchDescription(isbn, title, author) {
@@ -1131,7 +1136,8 @@
       if (isbn) {
         const res  = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(isbn)}&maxResults=1&key=${key}`);
         const data = await res.json();
-        const desc = data?.items?.[0]?.volumeInfo?.description || null;
+        const raw  = data?.items?.[0]?.volumeInfo?.description || null;
+        const desc = cleanDescription(raw);
         if (desc) {
           descCache[cacheKey] = desc;
           return desc;
@@ -1143,7 +1149,8 @@
         const q   = "intitle:" + encodeURIComponent(title) + (author ? "+inauthor:" + encodeURIComponent(author.split(" ").pop()) : "");
         const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${q}&maxResults=1&key=${key}`);
         const data = await res.json();
-        const desc = data?.items?.[0]?.volumeInfo?.description || null;
+        const raw  = data?.items?.[0]?.volumeInfo?.description || null;
+        const desc = cleanDescription(raw);
         descCache[cacheKey] = desc;
         return desc;
       }
@@ -1252,12 +1259,7 @@
         + '</div>'
       : '';
 
-    const scrollHint = isLast ? '' : `<div class="scroll-hint">
-      <svg width="16" height="10" viewBox="0 0 16 10" fill="none" aria-hidden="true">
-        <path d="M1 1l7 7 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <span>Next category</span>
-    </div>`;
+    const scrollHint = '';
 
     return `<section class="category-slide" id="slide-${id}" data-slug="${id}" data-cat-idx="${catIdx}">
       <div class="book-stage">${stageContent}</div>
