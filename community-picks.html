@@ -1026,7 +1026,27 @@
       overflow: hidden;
     }
 
-    .book-slide__review-block {
+    /* ─── SCROLLABLE REVIEWS ─────────────────────────────────────── */
+    .book-slide__reviews {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.2) transparent;
+      position: relative;
+      /* Fade at bottom to hint more content */
+      -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+      mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+    }
+
+    .book-slide__reviews::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    .book-slide__reviews::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.25);
+      border-radius: 3px;
+    }
       display: flex;
       flex-direction: column;
       gap: 3px;
@@ -1425,12 +1445,14 @@
         <div class="book-slide__author">${escHtml(author)}</div>
         ${catalogBtn ? `<span class="catalog-desktop">${catalogBtn}</span>` : ''}
         ${descHTML}
-        ${allRows.map((r, ri) => `
-          <div class="book-slide__review-block">
-            ${allRows.length > 1 ? starsHTML(parseInt(r[6],10) || 0) : ''}
-            <p class="book-slide__review" data-review="${escHtml(r[7]||'')}" data-title="${escHtml(title)}" data-author="${escHtml(author)}">${escHtml(r[7]||'')}</p>
-            <div class="book-slide__patron">— ${escHtml(formatDisplayName(r[2]))}</div>
-          </div>`).join('')}
+        <div class="book-slide__reviews">
+          ${allRows.map((r, ri) => `
+            <div class="book-slide__review-block">
+              ${allRows.length > 1 ? starsHTML(parseInt(r[6],10) || 0) : ''}
+              <p class="book-slide__review" data-review="${escHtml(r[7]||'')}" data-title="${escHtml(title)}" data-author="${escHtml(author)}">${escHtml(r[7]||'')}</p>
+              <div class="book-slide__patron">— ${escHtml(formatDisplayName(r[2]))}</div>
+            </div>`).join('')}
+        </div>
         ${alsoHTML}
       </div>
     </article>`;
