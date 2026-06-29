@@ -1348,30 +1348,38 @@
 
   // ── Build HTML ────────────────────────────────────────────────────────────
 
-  // ── Syndetics description cache ──────────────────────────────────────────
+  // ── Google Books description cache ───────────────────────────────────────
   const descCache = {};
 
   async function fetchDescription(isbn, title, author) {
-    if (!isbn) return null;
-    if (descCache[isbn] !== undefined) return descCache[isbn];
+    if (!isbn && !title) return null;
+    const cacheKey = isbn || title;
+    if (descCache[cacheKey] !== undefined) return descCache[cacheKey];
+
+    const key = 'AIzaSyCi1LSVSow7yElbgEnlFaTre22_0VkR0DA';
 
     try {
-      const url = `https://westportlibrary.org/reading-challenge/syndetics-proxy.php?isbn=${encodeURIComponent(isbn)}`;
-      const res  = await fetch(url);
-      if (!res.ok) { descCache[isbn] = null; return null; }
-      const html = await res.text();
-
-      // Strip HTML tags and normalise whitespace
-      const tmp  = document.createElement('div');
-      tmp.innerHTML = html;
-      const text = (tmp.textContent || tmp.innerText || '').trim().replace(/\s+/g, ' ');
-
-      descCache[isbn] = text || null;
-      return descCache[isbn];
+      // First try by ISBN
+      if (isbn) {
+        const res  = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(isbn)}&maxResults=1&key=${key}`);
+        const data = await res.json();
+        const desc = data?.items?.[0]?.volumeInfo?.description || null;
+        if (desc) { descCache[cacheKey] = desc; return desc; }
+      }
+      // Fallback: title + author last name
+      if (title) {
+        const q   = "intitle:" + encodeURIComponent(title) + (author ? "+inauthor:" + encodeURIComponent(author.split(' ').pop()) : '');
+        const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${q}&maxResults=1&key=${key}`);
+        const data = await res.json();
+        const desc = data?.items?.[0]?.volumeInfo?.description || null;
+        descCache[cacheKey] = desc;
+        return desc;
+      }
     } catch {
-      descCache[isbn] = null;
-      return null;
+      descCache[cacheKey] = null;
     }
+    descCache[cacheKey] = null;
+    return null;
   }
 
   // ── Build cross-challenge index: isbn → [categories] ─────────────────────
