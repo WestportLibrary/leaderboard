@@ -1436,7 +1436,7 @@
       const author = (row[5] || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
       const key    = title + '|' + author;
       console.log('Group key:', key, '| Title:', row[4], '| Author:', row[5]);
-        groups[seen[key]].push(row);
+      if (seen[key] !== undefined) {
       } else {
         seen[key] = groups.length;
         groups.push([row]);
