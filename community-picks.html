@@ -974,6 +974,14 @@
       line-height: 1;
     }
 
+    .catalog-mobile { display: none; }
+    .catalog-desktop { display: contents; }
+
+    @media (max-width: 640px) {
+      .catalog-mobile { display: contents; }
+      .catalog-desktop { display: none; }
+    }
+
     .book-slide__catalog:hover { background: var(--teal-dark); }
 
 
@@ -1412,9 +1420,10 @@
         ${starsHTML(stars)}
         <div class="book-slide__title-row">
           <div class="book-slide__title">${escHtml(title)}</div>
+          ${catalogBtn ? `<span class="catalog-mobile">${catalogBtn}</span>` : ''}
         </div>
         <div class="book-slide__author">${escHtml(author)}</div>
-        ${catalogBtn}
+        ${catalogBtn ? `<span class="catalog-desktop">${catalogBtn}</span>` : ''}
         ${descHTML}
         ${allRows.map((r, ri) => `
           <div class="book-slide__review-block">
@@ -1439,9 +1448,11 @@
       const coreTitle = (parts.length > 1 && EDITION_MARKERS.test(parts.slice(1).join('')))
         ? parts[0].toLowerCase().replace(/[^a-z0-9]/g, '')
         : rawTitle.toLowerCase().replace(/[^a-z0-9]/g, '');
-      // Last name only — last space-separated word, strip commas
-      const authorWords = (row[5] || '').trim().replace(/,/g, '').split(/\s+/);
-      const lastName    = (authorWords[authorWords.length - 1] || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      // Handle both "First Last" and "Last, First" author formats
+      const rawAuthor = (row[5] || '').trim();
+      const lastName  = rawAuthor.includes(',')
+        ? rawAuthor.split(',')[0].trim().toLowerCase().replace(/[^a-z0-9]/g, '')
+        : rawAuthor.split(/\s+/).pop().toLowerCase().replace(/[^a-z0-9]/g, '');
       const key = coreTitle + '|' + lastName;
       if (seen[key] !== undefined) {
         groups[seen[key]].push(row);
