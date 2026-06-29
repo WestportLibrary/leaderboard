@@ -159,7 +159,11 @@
       letter-spacing: -0.02em;
       color: #fff;
       margin-bottom: 2px;
-      min-height: 1.3em;
+      min-height: 2.4em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
     }
 
     .rolodex-label__meta {
@@ -195,32 +199,39 @@
 
     .rolodex-stage.dragging { cursor: grabbing; }
 
-    /* Shelf surface */
     .shelf-line {
       position: absolute;
-      bottom: 18%;
+      bottom: calc(18% - 16px);
       left: 0; right: 0;
-      height: 8px;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.2));
-      border-radius: 4px;
-      z-index: 5;
+      height: 30px;
+      background: linear-gradient(to bottom,
+        rgba(255,255,255,0.06) 0%,
+        rgba(140,80,25,0.45) 20%,
+        rgba(90,45,10,0.65) 40%,
+        rgba(60,28,5,0.78) 55%,
+        rgba(40,15,0,0.65) 75%,
+        rgba(20,5,0,0.35) 100%
+      );
+      z-index: 2;
       pointer-events: none;
     }
 
     .shelf-shadow {
       position: absolute;
-      bottom: calc(18% - 10px);
+      bottom: calc(18% - 28px);
       left: 0; right: 0;
-      height: 28px;
+      height: 20px;
       background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent);
+      z-index: 1;
       pointer-events: none;
-      z-index: 4;
     }
+
+    .shelf-face { display: none; }
 
     /* Individual book */
     .book {
       position: absolute;
-      bottom: calc(18% + 8px);
+      bottom: calc(18% + 14px);
       transform-origin: center bottom;
       user-select: none;
       -webkit-user-select: none;
@@ -231,90 +242,199 @@
     .book__inner {
       width: 100%;
       height: 100%;
-      border-radius: 2px 5px 5px 2px;
+      border-radius: 2px 4px 4px 2px;
+      overflow: hidden;
+      position: relative;
+      box-shadow:
+        3px 6px 20px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    /* Binding groove */
+    .book__binding {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 5px;
+      background: linear-gradient(to right, rgba(0,0,0,0.45), rgba(0,0,0,0.08));
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Page edge */
+    .book__page-edge {
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: 5px;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.07) 0px,
+        rgba(255,255,255,0.07) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Decorative rules on spine */
+    .book__rule {
+      position: absolute;
+      left: 8px; right: 8px;
+      height: 1px;
+      background: rgba(255,255,255,0.25);
+      z-index: 2;
+      pointer-events: none;
+    }
+    .book__rule--top { top: 8px; }
+    .book__rule--bot { display: none; }
+
+    /* Library spine label */
+    .book__label {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #f5f0e0;
+      border: 0.5px solid rgba(0,0,0,0.15);
+      border-radius: 1px;
+      padding: 2px 3px;
+      min-width: 18px;
+      max-width: calc(100% - 8px);
+      text-align: center;
+      z-index: 3;
+      pointer-events: none;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+    }
+
+    .book__label span {
+      display: block;
+      font-family: 'Courier New', monospace;
+      font-weight: 700;
+      font-size: 6px;
+      line-height: 1.3;
+      color: #1a1a1a;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: clip;
+    }
+
+    .book.active .book__label { display: none; }
+
+    /* Spine text for non-active books */
+    .book__spine-text {
+      position: absolute;
+      inset: 14px 0 48px;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      position: relative;
-      box-shadow:
-        inset -6px 0 12px rgba(0,0,0,0.4),
-        inset 3px 0 6px rgba(255,255,255,0.15),
-        4px 8px 24px rgba(0,0,0,0.55);
+      z-index: 1;
     }
 
-    /* Page-edge illusion on right side */
-    .book__inner::after {
-      content: '';
-      position: absolute;
-      right: 0; top: 0; bottom: 0;
-      width: 6px;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,0.06) 0px,
-        rgba(255,255,255,0.06) 1px,
-        transparent 1px,
-        transparent 3px
-      );
-      pointer-events: none;
-    }
-
-    /* Spine binding line */
-    .book__inner::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 5px;
-      background: linear-gradient(to right, rgba(0,0,0,0.35), rgba(0,0,0,0.1));
-      border-radius: 2px 0 0 2px;
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    /* Spine text for non-active books */
-    .book__spine-text {
-      writing-mode: vertical-rl;
-      transform: rotate(180deg);
+    .book__spine-inner {
+      transform: rotate(90deg);
+      white-space: normal;
+      word-break: break-word;
+      text-align: center;
+      width: var(--spine-avail-h, 120px);
       font-family: 'Catamaran', sans-serif;
       font-weight: 800;
-      font-size: clamp(0.65rem, 1.2vw, 0.9rem);
-      line-height: 1.2;
-      color: rgba(0,0,0,0.7);
-      padding: 12px 6px;
+      font-size: clamp(0.6rem, 1vw, 0.8rem);
+      line-height: 1.25;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    /* Face-out content — hidden on spine books */
+    .book__face-content {
+      display: none;
+      position: absolute;
+      inset: 14px 8px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      position: relative;
+      gap: 6px;
       z-index: 1;
+    }
+
+    .book__face-label {
+      font-family: 'Catamaran', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.55rem, 0.9vw, 0.68rem);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .book__face-rule {
+      width: 28px;
+      height: 1px;
+      background: rgba(255,255,255,0.3);
+      flex-shrink: 0;
+    }
+
+    .book__face-title {
+      font-family: 'Catamaran', sans-serif;
+      font-weight: 900;
+      font-size: clamp(0.9rem, 1.8vw, 1.3rem);
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .book__face-count {
+      font-family: 'Catamaran', sans-serif;
+      font-weight: 600;
+      font-size: 0.55rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
     }
 
     /* Active book faces out */
     .book.active .book__inner {
-      border-radius: 3px 6px 6px 3px;
+      border-radius: 2px 5px 5px 2px;
       box-shadow:
-        -6px 0 0 rgba(0,0,0,0.25),
-        inset 4px 0 8px rgba(255,255,255,0.2),
-        16px 24px 56px rgba(0,0,0,0.75);
+        -5px 0 0 rgba(0,0,0,0.3),
+        8px 16px 40px rgba(0,0,0,0.7),
+        inset 0 1px 0 rgba(255,255,255,0.12);
     }
 
     .book.active .book__spine-text {
-      writing-mode: horizontal-tb;
-      transform: none;
-      font-size: clamp(1rem, 2.2vw, 1.4rem);
-      color: rgba(0,0,0,0.85);
-      font-weight: 900;
-      padding: 20px 16px;
-      -webkit-line-clamp: 6;
-      line-height: 1.35;
+      display: none;
     }
 
-    @media (max-width: 640px) {
-      .book.active .book__spine-text {
-        font-size: clamp(1.1rem, 5vw, 1.5rem);
-        padding: 16px 12px;
-      }
+    .book.active .book__face-content {
+      display: flex;
+    }
+
+    .book.active .book__page-edge {
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.1) 0px,
+        rgba(255,255,255,0.1) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+    }
+
+    @keyframes swipe-hint {
+      0%   { transform: translateX(0); }
+      20%  { transform: translateX(-18px); }
+      50%  { transform: translateX(12px); }
+      75%  { transform: translateX(-6px); }
+      100% { transform: translateX(0); }
+    }
+
+    .book.active.swipe-hint {
+      animation: swipe-hint 0.9s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+    }
+
+    @media (min-width: 641px) {
+      .book.active.swipe-hint { animation: none; }
     }
 
     /* ─── COVER THUMBNAIL OVERLAY ────────────────────────────────── */
@@ -527,9 +647,16 @@
       cursor: pointer;
       white-space: nowrap;
       overflow: hidden;
-      text-overflow: ellipsis;
       width: 100%;
       transition: background 0.15s;
+    }
+
+    #navBtnLabel {
+      overflow: hidden;
+      text-overflow: clip;
+      white-space: nowrap;
+      flex: 1;
+      min-width: 0;
     }
 
     .header__nav-btn:hover { background: rgba(255,255,255,0.18); }
@@ -685,7 +812,7 @@
     /* Arrow buttons */
     .stage-arrow {
       position: absolute;
-      top: 40%;
+      top: 22%;
       transform: translateY(-50%);
       z-index: 10;
       width: 44px;
@@ -831,7 +958,8 @@
 
     .book-slide__catalog {
       flex-shrink: 0;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
       background: var(--teal);
       border-radius: 20px;
       padding: clamp(5px, 0.6vh, 8px) clamp(12px, 1.5vw, 20px);
@@ -843,18 +971,41 @@
       color: #fff;
       text-decoration: none;
       transition: background 0.15s;
-      position: relative;
-      top: -2px;
+      line-height: 1;
     }
 
     .book-slide__catalog:hover { background: var(--teal-dark); }
+
 
     .book-slide__author {
       font-family: 'Playfair Display', serif;
       font-style: italic;
       font-size: clamp(0.9rem, 1.6vw, 1.4rem);
       color: rgba(255,255,255,0.6);
-      margin-top: -4px;
+    }
+
+    .book-slide__catalog {
+      display: inline-flex;
+      align-items: center;
+      align-self: flex-start;
+      background: var(--teal);
+      border-radius: 20px;
+      padding: clamp(5px, 0.6vh, 8px) clamp(12px, 1.5vw, 20px);
+      font-family: 'Catamaran', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.68rem, 0.9vw, 0.88rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fff;
+      text-decoration: none;
+      transition: background 0.15s;
+      line-height: 1;
+    }
+
+    /* Desktop: pill next to author, hide from title row */
+
+    @media (max-width: 640px) {
+      /* Mobile: pill next to title, hide from author row */
     }
 
     .book-slide__description-inline {
@@ -1008,16 +1159,26 @@
 
       /* Home screen */
       .home-screen__eyebrow { display: none; }
-      .home-screen__headline {
-        font-size: clamp(1.4rem, 7vw, 2rem);
-        margin-bottom: 0;
+      .home-screen__headline { display: none; }
+      .home-screen__tagline {
+        font-size: 0.78rem;
+        line-height: 1.45;
+        color: rgba(255,255,255,0.7);
+        margin-top: 2px;
+        text-align: left;
+      }
+      .home-screen__top {
+        padding: 4px 16px;
       }
       .home-screen__top { padding: 8px 16px 4px; }
       .rolodex-label { padding: 0 16px 4px; }
       .rolodex-label__name { font-size: clamp(0.9rem, 4vw, 1.2rem); }
+      .book__face-title { font-size: clamp(0.9rem, 4.5vw, 1.2rem); }
       .rolodex-label__hint { display: none; }
-      .shelf-line, .shelf-shadow { bottom: 2%; }
-      .book { bottom: calc(2% + 8px); }
+      .shelf-line, .shelf-shadow, .shelf-face { bottom: 35%; }
+      .shelf-face { bottom: calc(35% - 10px); }
+      .shelf-shadow { bottom: calc(35% - 18px); }
+      .book { bottom: calc(35% + 14px); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1042,7 +1203,7 @@
 <!-- ─── HEADER ─────────────────────────────────────────────────────────── -->
 <header class="header">
   <button class="header__wordmark" id="homeBtn" aria-label="Go to home screen">
-    <span>Westport Library</span>
+    <span>Summer Reading Challenge 2026</span>
     Community Picks
   </button>
   <div class="header__sep"></div>
@@ -1061,7 +1222,6 @@
 <!-- ─── HOME SCREEN ───────────────────────────────────────────────────── -->
 <div class="home-screen" id="homeScreen">
   <div class="home-screen__top">
-    <div class="home-screen__eyebrow">Summer Reading Challenge 2026</div>
     <h1 class="home-screen__headline">Community<br>Picks</h1>
     <p class="home-screen__tagline">Stuck on a challenge? Browse top-rated books submitted by other readers for ideas.</p>
   </div>
@@ -1069,7 +1229,6 @@
     <div class="rolodex-label" id="rolodexLabel">
       <div class="rolodex-label__name" id="rolodexName">—</div>
       <div class="rolodex-label__meta" id="rolodexMeta"></div>
-      <div class="rolodex-label__tap">Tap book to browse</div>
     </div>
     <div class="rolodex-stage" id="rolodexStage"></div>
   </div>
@@ -1144,61 +1303,30 @@
 
   // ── Build HTML ────────────────────────────────────────────────────────────
 
-  // ── Clean Google Books descriptions ──────────────────────────────────────
-  function cleanDescription(desc) {
-    if (!desc) return null;
-    // Split into sentences/lines and filter out marketing copy
-    const lines = desc.split(/\n+/).map(l => l.trim()).filter(Boolean);
-    const clean = lines.filter(line => {
-      // Remove lines that are mostly uppercase (marketing copy)
-      const upperRatio = (line.match(/[A-Z]/g) || []).length / line.length;
-      if (upperRatio > 0.5 && line.length > 20) return false;
-      // Remove lines with asterisks, bullet marketing patterns
-      if (/\*{1,}/.test(line)) return false;
-      // Remove lines that are just awards/bestseller lists
-      if (/bestseller|#\d+|starred review|praise for/i.test(line) && line.length < 80) return false;
-      return true;
-    });
-    return clean.length > 0 ? clean.join(' ') : null;
-  }
+  // ── Syndetics description cache ──────────────────────────────────────────
   const descCache = {};
 
   async function fetchDescription(isbn, title, author) {
-    if (!isbn && !title) return null;
-    const cacheKey = isbn || title;
-    if (descCache[cacheKey] !== undefined) return descCache[cacheKey];
-
-    const key = 'AIzaSyCi1LSVSow7yElbgEnlFaTre22_0VkR0DA';
+    if (!isbn) return null;
+    if (descCache[isbn] !== undefined) return descCache[isbn];
 
     try {
-      // First try by ISBN
-      if (isbn) {
-        const res  = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(isbn)}&maxResults=1&key=${key}`);
-        const data = await res.json();
-        const raw  = data?.items?.[0]?.volumeInfo?.description || null;
-        const desc = cleanDescription(raw);
-        if (desc) {
-          descCache[cacheKey] = desc;
-          return desc;
-        }
-      }
+      const url = `https://syndetics.com/index.aspx?isbn=${encodeURIComponent(isbn)}/SUMMARY.HTML&client=westportpl&type=xw12`;
+      const res  = await fetch(url);
+      if (!res.ok) { descCache[isbn] = null; return null; }
+      const html = await res.text();
 
-      // Fallback: search by title + author
-      if (title) {
-        const q   = "intitle:" + encodeURIComponent(title) + (author ? "+inauthor:" + encodeURIComponent(author.split(" ").pop()) : "");
-        const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${q}&maxResults=1&key=${key}`);
-        const data = await res.json();
-        const raw  = data?.items?.[0]?.volumeInfo?.description || null;
-        const desc = cleanDescription(raw);
-        descCache[cacheKey] = desc;
-        return desc;
-      }
+      // Strip HTML tags and normalise whitespace
+      const tmp  = document.createElement('div');
+      tmp.innerHTML = html;
+      const text = (tmp.textContent || tmp.innerText || '').trim().replace(/\s+/g, ' ');
+
+      descCache[isbn] = text || null;
+      return descCache[isbn];
     } catch {
-      descCache[cacheKey] = null;
+      descCache[isbn] = null;
+      return null;
     }
-
-    descCache[cacheKey] = null;
-    return null;
   }
 
   // ── Build cross-challenge index: isbn → [categories] ─────────────────────
@@ -1225,8 +1353,12 @@
     const patron  = formatDisplayName(row[2]);
 
     const coverUrl = (row[9] || '').trim();
-    // Use stored cover URL, upgrading MC.GIF to LC.GIF for higher res
-    const lc = coverUrl ? coverUrl.replace('MC.GIF', 'LC.GIF') : null;
+    // Use stored cover URL if available, otherwise derive from ISBN
+    const lc = coverUrl
+      ? coverUrl.replace('MC.GIF', 'LC.GIF')
+      : isbn
+        ? `https://secure.syndetics.com/index.aspx?isbn=${encodeURIComponent(isbn)}/LC.GIF&client=westportpl&upc=&oclc=`
+        : null;
     const mc = lc ? lc.replace('LC.GIF', 'MC.GIF') : null;
 
     const coverHTML = lc
@@ -1265,9 +1397,9 @@
         ${starsHTML(stars)}
         <div class="book-slide__title-row">
           <div class="book-slide__title">${escHtml(title)}</div>
-          ${catalogBtn}
         </div>
         <div class="book-slide__author">${escHtml(author)}</div>
+        ${catalogBtn}
         ${descHTML}
         <p class="book-slide__review" data-review="${escHtml(review)}" data-title="${escHtml(title)}" data-author="${escHtml(author)}">${escHtml(review)}</p>
         <div class="book-slide__patron">— ${escHtml(patron)}</div>
@@ -1344,7 +1476,7 @@
     buildWheel(categories, entriesByCategory);
     showHome();
 
-    // Populate descriptions async — fetch Google Books as slides are viewed
+    // Populate descriptions from Syndetics as slides are viewed
     populateDescriptions();
   }
 
@@ -1569,11 +1701,25 @@
 
   // ── Header helpers ────────────────────────────────────────────────────────
 
+  function truncateAtWord(str, maxLen) {
+    if (str.length <= maxLen) return str;
+    const trimmed = str.slice(0, maxLen);
+    const lastSpace = trimmed.lastIndexOf(' ');
+    return (lastSpace > 0 ? trimmed.slice(0, lastSpace) : trimmed) + '…';
+  }
+
   function updateHeaderProgress(idx, total, cat) {
     document.getElementById('headerProgress').textContent = (idx+1)+' / '+total;
-    document.getElementById('navBtnLabel').textContent = cat
-      ? cat
-      : 'Jump to category…';
+    const label = document.getElementById('navBtnLabel');
+    if (cat) {
+      // Truncate at word boundary based on available button width
+      const btn = document.getElementById('navBtn');
+      const maxChars = Math.floor((btn.offsetWidth - 40) / 7); // rough char width estimate
+      label.textContent = truncateAtWord(cat, Math.max(20, maxChars));
+      label.title = cat; // full text on hover
+    } else {
+      label.textContent = 'Jump to category…';
+    }
   }
 
   function updateDropdownActive(idx) {
@@ -1685,7 +1831,7 @@
 
   async function loadData() {
     if (new URLSearchParams(window.location.search).has('test')) {
-      // In test mode, use dummy descriptions instead of hitting Google Books
+      // In test mode, use dummy descriptions instead of hitting Syndetics
       Object.assign(descCache, SAMPLE_DESCRIPTIONS);
 
       const ebc = {};
@@ -1728,15 +1874,26 @@
 
   // ── Screen navigation ─────────────────────────────────────────────────────
 
+  let swipeHintShown = false;
   function showHome() {
     document.getElementById('homeScreen').style.display = 'flex';
     document.getElementById('scrollContainer').style.display = 'none';
     document.getElementById('headerNav').style.display = 'none';
     document.getElementById('headerProgress').style.display = 'none';
-    // Re-position books now that the stage has real dimensions
     requestAnimationFrame(() => {
       const stage = document.getElementById('rolodexStage');
       if (stage && stage._positionBooks) stage._positionBooks();
+      // Show swipe hint once on mobile
+      if (!swipeHintShown && window.innerWidth < 640) {
+        swipeHintShown = true;
+        setTimeout(() => {
+          const active = stage && stage.querySelector('.book.active');
+          if (active) {
+            active.classList.add('swipe-hint');
+            active.addEventListener('animationend', () => active.classList.remove('swipe-hint'), { once: true });
+          }
+        }, 800);
+      }
     });
   }
 
@@ -1754,13 +1911,18 @@
 
   // ── Book Shelf ───────────────────────────────────────────────────────────
 
+  // Each color: [topGrad, bottomGrad, textColor]
   const BOOK_COLORS = [
-    '#f7c948', // mango
-    '#a8dde8', // mint
-    '#f4a0c0', // strawberry
-    '#f5e8d0', // vanilla
-    '#e8c4f0', // lavender
-    '#b8e8c0', // sage
+    ['#2d6e8a', '#1a4d66', 'rgba(255,255,255,0.85)'],  // deep teal
+    ['#c9525a', '#932a35', 'rgba(255,255,255,0.85)'],  // crimson
+    ['#6b4c9e', '#432e6e', 'rgba(255,255,255,0.85)'],  // violet
+    ['#b87d1a', '#7a5010', 'rgba(255,255,255,0.85)'],  // amber
+    ['#2a7a5c', '#164d3a', 'rgba(255,255,255,0.85)'],  // forest
+    ['#8a3a2a', '#5c2018', 'rgba(255,255,255,0.85)'],  // terracotta
+    ['#3a5a8a', '#223860', 'rgba(255,255,255,0.85)'],  // navy
+    ['#7a4a8a', '#4e2a60', 'rgba(255,255,255,0.85)'],  // plum
+    ['#4a7a3a', '#2c5020', 'rgba(255,255,255,0.85)'],  // moss
+    ['#8a6a2a', '#5c4418', 'rgba(255,255,255,0.85)'],  // bronze
   ];
 
   function buildWheel(categories, entriesByCategory) {
@@ -1772,15 +1934,41 @@
 
     const N = categories.length;
 
-    // Shelf line
+    // Shelf
     const shelfLine = document.createElement('div');
     shelfLine.className = 'shelf-line';
     stage.appendChild(shelfLine);
+    const shelfFace = document.createElement('div');
+    shelfFace.className = 'shelf-face';
+    stage.appendChild(shelfFace);
     const shelfShadow = document.createElement('div');
     shelfShadow.className = 'shelf-shadow';
     stage.appendChild(shelfShadow);
 
-  // Strip common prefixes for spine labels
+  // Abbreviate category for spine label (2-3 lines of short text)
+  function spineLabelText(cat) {
+    const stripped = cat
+      .replace(/^read a book (that |about |with |set |based |written |you |from )/i, '')
+      .replace(/^read /i, '')
+      .trim()
+      .toUpperCase();
+    // Take first 3 words max, each line max 6 chars
+    const words = stripped.split(/\s+/).slice(0, 4);
+    const lines = [];
+    let current = '';
+    for (const w of words) {
+      const abbr = w.slice(0, 6);
+      if (current.length + abbr.length > 6 && current) {
+        lines.push(current);
+        current = abbr;
+      } else {
+        current = current ? current + ' ' + abbr : abbr;
+      }
+    }
+    if (current) lines.push(current);
+    return lines.slice(0, 3);
+  }
+
   function spineLabel(cat) {
     return cat
       .replace(/^read a book (that |about |with |set |based |written |you |from )/i, '')
@@ -1794,10 +1982,27 @@
       el.className = 'book';
       el.dataset.idx  = i;
       el.dataset.slug = slug(cat);
-      const color = BOOK_COLORS[i % BOOK_COLORS.length];
-      el.innerHTML = `<div class="book__inner" style="background:${color}">
-        <div class="book__spine-text" data-full="${escHtml(cat)}" data-short="${escHtml(spineLabel(cat))}">${escHtml(spineLabel(cat))}</div>
-      </div>`;
+      const [top, bot, txt] = BOOK_COLORS[i % BOOK_COLORS.length];
+      const short = escHtml(spineLabel(cat));
+      const count = (entriesByCategory[cat] || []).length;
+      const countLabel = count === 0 ? 'No reviews' : count + ' review' + (count > 1 ? 's' : '');
+      const labelLines = spineLabelText(cat).map(l => `<span>${escHtml(l)}</span>`).join('');
+
+      el.innerHTML = `
+        <div class="book__inner" style="background:linear-gradient(180deg,${top} 0%,${bot} 100%)">
+          <div class="book__binding"></div>
+          <div class="book__page-edge"></div>
+          <div class="book__rule book__rule--top"></div>
+          <div class="book__spine-text"><div class="book__spine-inner" style="color:${txt}">${short}</div></div>
+          <div class="book__face-content">
+            <div class="book__face-label">Challenge</div>
+            <div class="book__face-rule"></div>
+            <div class="book__face-title">${short}</div>
+            <div class="book__face-rule"></div>
+            <div class="book__face-count">${countLabel}</div>
+          </div>
+          <div class="book__label">${labelLines}</div>
+        </div>`;
       stage.appendChild(el);
       return el;
     });
@@ -1813,14 +2018,14 @@
       const W = getStageW();
       const H = getStageH();
       const isMob = window.innerWidth < 640;
-      // On mobile, drive from height so books fill the stage vertically
+      // Mobile: active book takes ~55% of stage height, leaving room for visible spines
       const activeH = isMob
-        ? Math.min(H * 0.90, 560)
+        ? Math.min(H * 0.55, 320)
         : Math.min(W * 0.38 * 1.55, 430);
       const activeW = isMob
         ? activeH / 1.55
         : Math.min(W * 0.38, 280);
-      const spineW   = Math.max(36, Math.min(56, W * 0.055));
+      const spineW   = Math.max(isMob ? 28 : 36, Math.min(isMob ? 40 : 56, W * 0.055));
       const spineH   = Math.min(activeH * 0.88, H * 0.7);
       const centerX  = W / 2;
       return { W, H, activeW, activeH, spineW, spineH, centerX };
@@ -1883,17 +2088,18 @@
             + (spineW + gap) * (intDelta - 1) + gap;
         }
 
-        const opacity = Math.max(0.2, 1 - Math.abs(delta) * 0.15);
+        const opacity = isActive ? 1 : Math.max(0.55, 1 - Math.abs(delta) * 0.08);
         const zIndex  = Math.round(100 - Math.abs(delta) * 10);
 
         book.style.width     = w + 'px';
         book.style.height    = h + 'px';
+        book.style.setProperty('--spine-avail-h', Math.max(40, h - 70) + 'px');
         book.style.left      = x + 'px';
-        const shelfPct = window.innerWidth < 640 ? '2%' : '18%';
-        book.style.bottom    = `calc(${shelfPct} + 8px)`;
+        const shelfPct = window.innerWidth < 640 ? '35%' : '18%';
+        book.style.bottom = `calc(${shelfPct} + 14px)`;
         book.style.opacity   = opacity;
         book.style.zIndex    = zIndex;
-        book.style.transform = `perspective(600px) rotateY(${intDelta * -4}deg)`;
+        book.style.transform = '';
         book.classList.toggle('active', isActive);
       });
 
