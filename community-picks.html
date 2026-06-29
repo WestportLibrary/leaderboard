@@ -1065,6 +1065,13 @@
       color: rgba(255,255,255,0.85);
     }
 
+    .book-slide__patron-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
     .book-slide__patron {
       font-family: 'Catamaran', sans-serif;
       font-size: clamp(0.62rem, 0.8vw, 0.78rem);
@@ -1450,7 +1457,6 @@
       ${thumbHTML}
       <div class="book-slide__info">
         <div class="book-slide__category">${escHtml(catName)}</div>
-        ${starsHTML(stars)}
         <div class="book-slide__title-row">
           <div class="book-slide__title">${escHtml(title)}</div>
           ${catalogBtn ? `<span class="catalog-mobile">${catalogBtn}</span>` : ''}
@@ -1461,9 +1467,11 @@
         <div class="book-slide__reviews">
           ${allRows.map((r, ri) => `
             <div class="book-slide__review-block">
-              ${allRows.length > 1 ? starsHTML(parseInt(r[6],10) || 0) : ''}
               <p class="book-slide__review" data-review="${escHtml(r[7]||'')}" data-title="${escHtml(title)}" data-author="${escHtml(author)}">${escHtml(r[7]||'')}</p>
-              <div class="book-slide__patron">— ${escHtml(formatDisplayName(r[2]))}</div>
+              <div class="book-slide__patron-row">
+                ${starsHTML(parseInt(r[6],10) || 0)}
+                <span class="book-slide__patron">— ${escHtml(formatDisplayName(r[2]))}</span>
+              </div>
             </div>`).join('')}
         </div>
         ${alsoHTML}
