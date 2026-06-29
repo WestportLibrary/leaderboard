@@ -1031,10 +1031,10 @@
       flex: 1;
       min-height: 0;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
       scrollbar-width: thin;
       scrollbar-color: rgba(255,255,255,0.2) transparent;
-      position: relative;
-      /* Fade at bottom to hint more content */
       -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
       mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
     }
@@ -1158,6 +1158,11 @@
         padding: 10px 16px 16px;
         gap: 5px;
         overflow: hidden;
+      }
+
+      .book-slide__reviews {
+        touch-action: pan-y;
+        -webkit-overflow-scrolling: touch;
       }
 
       .book-slide__title {
