@@ -783,7 +783,7 @@
       position: absolute;
       bottom: 44px;
       left: 0;
-      right: 50%;
+      right: 0;
       display: flex;
       justify-content: center;
       gap: 6px;
@@ -1016,6 +1016,18 @@
       -webkit-line-clamp: 5;
       -webkit-box-orient: vertical;
       overflow: hidden;
+    }
+
+    .book-slide__review-block {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .book-slide__review-block + .book-slide__review-block {
+      margin-top: 4px;
     }
 
     .book-slide__review {
@@ -1311,7 +1323,7 @@
     if (descCache[isbn] !== undefined) return descCache[isbn];
 
     try {
-      const url = `https://syndetics.com/index.aspx?isbn=${encodeURIComponent(isbn)}/SUMMARY.HTML&client=westportpl&type=xw12`;
+      const url = `https://westportlibrary.org/reading-challenge/syndetics-proxy.php?isbn=${encodeURIComponent(isbn)}`;
       const res  = await fetch(url);
       if (!res.ok) { descCache[isbn] = null; return null; }
       const html = await res.text();
@@ -1343,7 +1355,10 @@
     return index;
   }
 
-  function buildBookSlide(row, catName, isbnIndex) {
+  function buildBookSlide(rows, catName, isbnIndex) {
+    // rows is now an array — use first entry for book-level data
+    const row    = Array.isArray(rows) ? rows[0] : rows;
+    const allRows = Array.isArray(rows) ? rows : [rows];
     const title   = row[4] || '';
     const author  = row[5] || '';
     const stars   = parseInt(row[6],10) || 0;
@@ -1401,16 +1416,38 @@
         <div class="book-slide__author">${escHtml(author)}</div>
         ${catalogBtn}
         ${descHTML}
-        <p class="book-slide__review" data-review="${escHtml(review)}" data-title="${escHtml(title)}" data-author="${escHtml(author)}">${escHtml(review)}</p>
-        <div class="book-slide__patron">— ${escHtml(patron)}</div>
+        ${allRows.map((r, ri) => `
+          <div class="book-slide__review-block">
+            ${allRows.length > 1 ? starsHTML(parseInt(r[6],10) || 0) : ''}
+            <p class="book-slide__review" data-review="${escHtml(r[7]||'')}" data-title="${escHtml(title)}" data-author="${escHtml(author)}">${escHtml(r[7]||'')}</p>
+            <div class="book-slide__patron">— ${escHtml(formatDisplayName(r[2]))}</div>
+          </div>`).join('')}
         ${alsoHTML}
       </div>
     </article>`;
   }
 
+  // Group entries with the same ISBN into one slide
+  function groupEntriesByISBN(entries) {
+    const groups = [];
+    const seen   = {};
+    entries.forEach(row => {
+      const isbn = (row[8] || '').trim();
+      const key  = isbn || ('__' + (row[4] || '').trim().toLowerCase());
+      if (seen[key] !== undefined) {
+        groups[seen[key]].push(row);
+      } else {
+        seen[key] = groups.length;
+        groups.push([row]);
+      }
+    });
+    return groups;
+  }
+
   function buildCategorySlide(cat, entries, catIdx, totalCats, isbnIndex) {
     const id      = slug(cat);
     const isLast  = catIdx === totalCats - 1;
+    const groups  = groupEntriesByISBN(entries);
 
     let stageContent;
     if (entries.length === 0) {
@@ -1420,18 +1457,18 @@
           <a href="/reading-challenge/submit.html">Be the first to submit one!</a></div>
       </div>`;
     } else {
-      const booksHTML = entries.map(r => buildBookSlide(r, cat, isbnIndex)).join('');
+      const booksHTML = groups.map(g => buildBookSlide(g, cat, isbnIndex)).join('');
       stageContent = `
         <button class="stage-arrow stage-arrow--prev" data-cat="${id}" aria-label="Previous book" disabled>&#8592;</button>
         <div class="book-viewport">
           <div class="book-track" id="track-${id}">${booksHTML}</div>
         </div>
-        <button class="stage-arrow stage-arrow--next" data-cat="${id}" aria-label="Next book" ${entries.length<=1?'disabled':''}>&#8594;</button>`;
+        <button class="stage-arrow stage-arrow--next" data-cat="${id}" aria-label="Next book" ${groups.length<=1?'disabled':''}>&#8594;</button>`;
     }
 
-    const dotsHTML = entries.length > 1
+    const dotsHTML = groups.length > 1
       ? '<div class="book-dots" id="dots-'+id+'">'
-        + entries.map((_,i) => `<span class="dot${i===0?' active':''}" data-cat="${id}" data-i="${i}"></span>`).join('')
+        + groups.map((_,i) => `<span class="dot${i===0?' active':''}" data-cat="${id}" data-i="${i}"></span>`).join('')
         + '</div>'
       : '';
 
