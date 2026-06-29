@@ -1427,16 +1427,24 @@
     </article>`;
   }
 
+  const EDITION_MARKERS = /large\s*print|unabridged|a\s*novel|a\s*memoir|anniversary|revised|edition|reprint|omnibus|illustrated|graphic\s*novel/i;
+
   function groupEntriesByISBN(entries) {
     const groups = [];
     const seen   = {};
     entries.forEach(row => {
-      // Normalize title + author as the grouping key — catches same book with different ISBNs
-      const title  = (row[4] || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-      const author = (row[5] || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-      const key    = title + '|' + author;
-      console.log('Group key:', key, '| Title:', row[4], '| Author:', row[5]);
+      // Strip subtitle only if it looks like an edition marker, not a series title
+      const rawTitle = (row[4] || '').trim();
+      const parts    = rawTitle.split(/[:\-\(]/);
+      const coreTitle = (parts.length > 1 && EDITION_MARKERS.test(parts.slice(1).join('')))
+        ? parts[0].toLowerCase().replace(/[^a-z0-9]/g, '')
+        : rawTitle.toLowerCase().replace(/[^a-z0-9]/g, '');
+      // Last name only — last space-separated word, strip commas
+      const authorWords = (row[5] || '').trim().replace(/,/g, '').split(/\s+/);
+      const lastName    = (authorWords[authorWords.length - 1] || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const key = coreTitle + '|' + lastName;
       if (seen[key] !== undefined) {
+        groups[seen[key]].push(row);
       } else {
         seen[key] = groups.length;
         groups.push([row]);
