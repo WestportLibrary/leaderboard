@@ -1967,6 +1967,11 @@
       if (Object.prototype.hasOwnProperty.call(ebc, cat)) ebc[cat].push(row);
     }
 
+    // Sort each category's entries by submission date descending (most recent first)
+    categories.forEach(cat => {
+      if (ebc[cat]) ebc[cat].sort((a, b) => new Date(b[0]) - new Date(a[0]));
+    });
+
     render(categories, ebc);
   }
 
