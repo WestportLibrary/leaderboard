@@ -1427,13 +1427,14 @@
     </article>`;
   }
 
-  // Group entries with the same ISBN into one slide
   function groupEntriesByISBN(entries) {
     const groups = [];
     const seen   = {};
     entries.forEach(row => {
-      const isbn = (row[8] || '').trim();
-      const key  = isbn || ('__' + (row[4] || '').trim().toLowerCase());
+      // Normalize title + author as the grouping key — catches same book with different ISBNs
+      const title  = (row[4] || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+      const author = (row[5] || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+      const key    = title + '|' + author;
       if (seen[key] !== undefined) {
         groups[seen[key]].push(row);
       } else {
@@ -1490,6 +1491,12 @@
     // Build cross-challenge ISBN index
     const isbnIndex = buildIsbnIndex(categories, entriesByCategory);
 
+    // Build group counts (grouped by ISBN) for navigation
+    const groupCounts = {};
+    categories.forEach(cat => {
+      groupCounts[cat] = groupEntriesByISBN(entriesByCategory[cat] || []).length;
+    });
+
     // Build slides
     let html = '';
     categories.forEach((cat, i) => {
@@ -1509,7 +1516,7 @@
     }).join('');
 
     updateHeaderProgress(0, total, categories[0]);
-    attachEvents(categories, entriesByCategory, total);
+    attachEvents(categories, entriesByCategory, total, groupCounts);
     buildWheel(categories, entriesByCategory);
     showHome();
 
@@ -1610,7 +1617,7 @@
 
   // ── Events ────────────────────────────────────────────────────────────────
 
-  function attachEvents(categories, entriesByCategory, total) {
+  function attachEvents(categories, entriesByCategory, total, groupCounts) {
     const container = document.getElementById('scrollContainer');
     const navBtn    = document.getElementById('navBtn');
     const navDropdown = document.getElementById('navDropdown');
@@ -1620,7 +1627,7 @@
       const id = slug(cat);
       const entries = entriesByCategory[cat] || [];
       slideBookIndex[id] = 0;
-      if (entries.length > 0) setBookIndex(id, 0, entries.length);
+      if (entries.length > 0) setBookIndex(id, 0, groupCounts[cat] || entries.length);
     });
 
     // ── Arrow buttons ──────────────────────────────────────────────────────
@@ -1630,7 +1637,7 @@
       const catSlug = arrow.dataset.cat;
       const entries = entriesByCategory[categories.find(c=>slug(c)===catSlug)] || [];
       const dir     = arrow.classList.contains('stage-arrow--next') ? 1 : -1;
-      navigateBook(catSlug, dir, entries.length);
+      navigateBook(catSlug, dir, (groupCounts[categories.find(c => slug(c) === catSlug)] || entries.length));
     });
 
     // ── Dots ───────────────────────────────────────────────────────────────
@@ -1640,7 +1647,7 @@
       const catSlug = dot.dataset.cat;
       const i       = parseInt(dot.dataset.i, 10);
       const entries = entriesByCategory[categories.find(c=>slug(c)===catSlug)] || [];
-      setBookIndex(catSlug, i, entries.length);
+      setBookIndex(catSlug, i, (groupCounts[categories.find(c => slug(c) === catSlug)] || entries.length));
     });
 
     // ── Horizontal swipe for books ────────────────────────────────────────
@@ -1668,7 +1675,7 @@
         const catSlug = slide.dataset.slug;
         const cat     = categories.find(c => slug(c) === catSlug);
         const entries = entriesByCategory[cat] || [];
-        if (entries.length > 1) navigateBook(catSlug, dx < 0 ? 1 : -1, entries.length);
+        if (entries.length > 1) navigateBook(catSlug, dx < 0 ? 1 : -1, (groupCounts[categories.find(c => slug(c) === catSlug)] || entries.length));
       }
       touchStartX = null; touchStartY = null;
     }, { passive: true });
